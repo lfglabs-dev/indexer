@@ -17,7 +17,7 @@ interface TransferDetails {
  *
  * @param header Block header information
  * @param events List of events in the block
- * @returns Array of processed events
+ * @returns Array of documents to include in the db
  */
 export function decodeTransfersInBlock({ header, events }): any[] {
   const { blockNumber, blockHash, timestamp } = header;
