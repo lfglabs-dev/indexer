@@ -63,7 +63,7 @@ export function decodeTransfersInBlock({ header, events }): any[] {
         // Basic output object structure
         const output: any = {
           domain: decodeDomain(event.data.slice(1, 1 + arrLen).map(BigInt)),
-          timestamp: new Date(timestamp).getTime(),
+          timestamp: new Date(timestamp).getTime() / 1000,
           price: lastTransfer.amount,
           payer: lastTransfer.from_address,
           expiry,
