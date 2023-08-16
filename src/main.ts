@@ -1,4 +1,7 @@
-import { decodeTransfersInBlock, filter } from "./listener.ts";
+import { decodeTransfersInBlock } from "./listener.ts";
+import filter from "./filter.ts";
+
+Deno.env.get("MONGO_CONNECTION_STRING");
 
 export const config = {
   streamUrl: "https://mainnet.starknet.a5a.ch",
@@ -8,7 +11,7 @@ export const config = {
   sinkType: "mongo",
   sinkOptions: {
     database: "sales",
-    collectionName: "transfers",
+    collectionName: "sales",
   },
 };
 
