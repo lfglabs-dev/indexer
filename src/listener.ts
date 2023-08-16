@@ -1,7 +1,6 @@
 import { uint256 } from "./deps.ts";
 import { decodeDomain } from "./utils/starknetid.ts";
-import { NAMING_CONTRACT } from "./utils/constants.ts";
-import { SELECTOR_KEYS } from "./utils/constants.ts";
+import { NAMING_CONTRACT, SELECTOR_KEYS } from "./utils/constants.ts";
 
 interface EventInfo {
   fromAddress: string;
@@ -13,13 +12,22 @@ interface TransferDetails {
   amount: string;
 }
 
+/**
+ * Decodes and processes transfer events within a block.
+ *
+ * @param header Block header information
+ * @param events List of events in the block
+ * @returns Array of processed events
+ */
 export function decodeTransfersInBlock({ header, events }): any[] {
   const { blockNumber, blockHash, timestamp } = header;
+
   let lastTransfer: TransferDetails | null = null;
   let autoRenewed = false;
   let sponsorComm: number | null = null;
   let sponsorAddr: number | null = null;
 
+  // Mapping and decoding each event in the block
   const decodedEvents = events.map(({ event, receipt }) => {
     const key = BigInt(event.keys[0]);
 
@@ -27,6 +35,7 @@ export function decodeTransfersInBlock({ header, events }): any[] {
       case SELECTOR_KEYS.TRANSFER:
         const [fromAddress, toAddress, amountLow, amountHigh] = event.data;
         if (BigInt(toAddress) !== NAMING_CONTRACT) return;
+
         lastTransfer = {
           from_address: fromAddress,
           amount: uint256
@@ -47,18 +56,25 @@ export function decodeTransfersInBlock({ header, events }): any[] {
 
       case SELECTOR_KEYS.STARK_UPDATE:
         if (!lastTransfer) return;
+
         const arrLen = Number(event.data[0]);
         const expiry = Number(event.data[arrLen + 2]);
-        const output = {
+
+        // Basic output object structure
+        const output: any = {
           domain: decodeDomain(event.data.slice(1, 1 + arrLen).map(BigInt)),
           timestamp: new Date(timestamp).getTime(),
           price: lastTransfer.amount,
           payer: lastTransfer.from_address,
           expiry,
           auto: autoRenewed,
-          sponsor: sponsorAddr,
-          sponsor_comm: sponsorComm,
         };
+
+        // Conditionally add sponsor and sponsor_comm if they are not null
+        if (sponsorAddr !== null) {
+          output.sponsor = sponsorAddr;
+          output.sponsor_comm = sponsorComm;
+        }
 
         lastTransfer = null;
         autoRenewed = false;
@@ -71,5 +87,6 @@ export function decodeTransfersInBlock({ header, events }): any[] {
     }
   });
 
+  // Filtering out undefined or null values from the decoded events array
   return decodedEvents.filter(Boolean);
 }
