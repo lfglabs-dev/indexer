@@ -1,6 +1,7 @@
-import { uint256 } from "./deps.ts";
+import { uint256, formatUnits } from "./deps.ts";
 import { decodeDomain } from "./utils/starknetid.ts";
 import { NAMING_CONTRACT, SELECTOR_KEYS } from "./utils/constants.ts";
+import { DECIMALS } from "./utils/constants.ts";
 
 interface EventInfo {
   fromAddress: string;
@@ -38,9 +39,10 @@ export function decodeTransfersInBlock({ header, events }): any[] {
 
         lastTransfer = {
           from_address: fromAddress,
-          amount: uint256
-            .uint256ToBN({ low: amountLow, high: amountHigh })
-            .toString(),
+          amount: formatUnits(
+            uint256.uint256ToBN({ low: amountLow, high: amountHigh }),
+            DECIMALS
+          ),
         };
         break;
 

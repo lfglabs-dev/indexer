@@ -12,3 +12,4 @@ export const SELECTOR_KEYS = {
 };
 
 export const NAMING_CONTRACT = BigInt(Deno.env.get("NAMING_CONTRACT"));
+export const DECIMALS = 18;
