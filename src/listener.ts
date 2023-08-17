@@ -66,7 +66,7 @@ export function decodeTransfersInBlock({ header, events }): any[] {
         const output: any = {
           domain: decodeDomain(event.data.slice(1, 1 + arrLen).map(BigInt)),
           timestamp: new Date(timestamp).getTime() / 1000,
-          price: lastTransfer.amount,
+          price: +lastTransfer.amount,
           payer: lastTransfer.from_address,
           expiry,
           auto: autoRenewed,
@@ -75,7 +75,7 @@ export function decodeTransfersInBlock({ header, events }): any[] {
         // Conditionally add sponsor and sponsor_comm if they are not null
         if (sponsorAddr !== null) {
           output.sponsor = sponsorAddr;
-          output.sponsor_comm = sponsorComm;
+          output.sponsor_comm = +sponsorComm;
         }
 
         lastTransfer = null;
