@@ -3,8 +3,8 @@ import { Config, Starknet, Block, Console } from "./deps.ts";
 import filter from "./filter.ts";
 
 export const config: Config<Starknet, Console> = {
-  streamUrl: "https://mainnet.starknet.a5a.ch",
-  startingBlock: 12628,
+  streamUrl: Deno.env.get("STREAM_URL"),
+  startingBlock: Number(Deno.env.get("STARTING_BLOCK")),
   network: "starknet",
   filter,
   sinkType: "mongo",
@@ -14,6 +14,6 @@ export const config: Config<Starknet, Console> = {
   },
 };
 
-export default function transform(batch : Block[]) {
+export default function transform(batch: Block[]) {
   return batch.flatMap(decodeTransfersInBlock);
 }
