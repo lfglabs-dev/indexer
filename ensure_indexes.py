@@ -10,22 +10,13 @@ with open("env", "r", encoding="utf-8") as f:
 
 CONNECTION_STRING = env_vars.get("MONGO_CONNECTION_STRING")
 
-config = {
-    "streamUrl": "https://mainnet.starknet.a5a.ch",
-    "startingBlock": 12628,
-    "network": "starknet",
-    "filter": None,  # You can implement this later
-    "sinkType": "mongo",
-    "sinkOptions": {
-        "database": "sales",
-        "collectionName": "sales",
-    },
-}
+database = "sales"
+collection_name = "sales"
 
 def ensure_indexes():
     client = MongoClient(CONNECTION_STRING)
-    db = client[config["sinkOptions"]["database"]]
-    collection = db[config["sinkOptions"]["collectionName"]]
+    db = client[database]
+    collection = db[collection_name]
 
     with open("indexes.json", "r", encoding="utf-8") as f:
         index_data = json.load(f)
