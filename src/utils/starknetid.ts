@@ -2,7 +2,6 @@ const ZERO = 0n;
 const basicAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789-";
 const basicSizePlusOne = BigInt(basicAlphabet.length + 1);
 const bigAlphabet = "这来";
-const basicAlphabetSize = BigInt(basicAlphabet.length);
 const bigAlphabetSize = BigInt(bigAlphabet.length);
 const bigAlphabetSizePlusOne = BigInt(bigAlphabet.length + 1);
 
@@ -20,7 +19,7 @@ function extractStars(str: string): [string, number] {
  * @param bigint
  * @returns string
  */
-function decode(felt) {
+function decode(felt: bigint) {
   let decoded = "";
   while (felt !== ZERO) {
     const code = felt % basicSizePlusOne;
