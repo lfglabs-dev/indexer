@@ -19,7 +19,7 @@ const filter = {
       fromAddress: Deno.env.get("RENEWAL_CONTRACT"),
       keys: [formatKey(SELECTOR_KEYS.AUTO_RENEW)],
     },
-  ] as EventInfo[],
+  ],
 };
 
 export default filter;

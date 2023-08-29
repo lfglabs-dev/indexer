@@ -1,8 +1,8 @@
 import { decodeTransfersInBlock } from "./listener.ts";
-import { Config, Starknet, Block, Console } from "./deps.ts";
+import { Block } from "./deps.ts";
 import filter from "./filter.ts";
 
-export const config: Config<Starknet, Console> = {
+export const config = {
   streamUrl: Deno.env.get("STREAM_URL"),
   startingBlock: Number(Deno.env.get("STARTING_BLOCK")),
   network: "starknet",
@@ -14,6 +14,6 @@ export const config: Config<Starknet, Console> = {
   },
 };
 
-export default function transform(batch: Block[]) {
-  return batch.flatMap(decodeTransfersInBlock);
+export default function transform(block: Block) {
+  return decodeTransfersInBlock(block);
 }
