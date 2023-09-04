@@ -29,20 +29,20 @@ export const config = {
 };
 
 export default function transform({ events }: Block) {
-  // const { timestamp } = header as BlockHeader;
-  // const output = events.map(({ event }: EventWithTransaction) => {
-  //   const key = BigInt(event.keys[0]);
-  //   const to = event.data[1];
-  //   const id = BigInt(event.data[2]).toString();
-  //   return {
-  //     entity: { id },
-  //     update: {
-  //       $set: {
-  //         id: id,
-  //         owner: to,
-  //         main: { $cond: [{ $not: ["$main"] }, false, "$main"] },
-  //       },
-  //     },
-  //   };
-  // });
+  const output = events.map(({ event }: EventWithTransaction) => {
+    const id = BigInt(event.data[0]).toString();
+    const field = event.data[1];
+    const data = event.data[2];
+    return {
+      entity: { id, field },
+      update: {
+        $set: {
+          id,
+          field,
+          data,
+        },
+      },
+    };
+  });
+  return output;
 }
