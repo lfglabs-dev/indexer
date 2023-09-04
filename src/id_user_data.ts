@@ -24,8 +24,8 @@ export const config = {
   sinkOptions: {
     database: "starknetid",
     collectionName: "id_user_data",
+    entityMode: true,
   },
-  entityMode: true,
 };
 
 export default function transform({ events }: Block) {

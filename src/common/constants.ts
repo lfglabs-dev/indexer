@@ -6,7 +6,7 @@ export function formatFelt(key: bigint): string {
 
 export const SELECTOR_KEYS = {
   TRANSFER: BigInt(hash.getSelectorFromName("Transfer")),
-  USER_DATA_UPDATE: BigInt(Deno.env.get("UserDataUpdate") as string),
+  USER_DATA_UPDATE: BigInt(hash.getSelectorFromName("UserDataUpdate")),
 };
 
 export const MONGO_CONNECTION_STRING = Deno.env.get(
