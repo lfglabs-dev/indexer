@@ -10,7 +10,7 @@ const filter = {
   events: [
     {
       fromAddress: formatFelt(IDENTITY_CONTRACT),
-      keys: [formatFelt(SELECTOR_KEYS.USER_DATA_UPDATE)],
+      keys: [formatFelt(SELECTOR_KEYS.VERIFIER_DATA_UPDATE)],
     },
   ],
 };
@@ -23,7 +23,7 @@ export const config = {
   sinkType: "mongo",
   sinkOptions: {
     database: "starknetid",
-    collectionName: "id_user_data",
+    collectionName: "id_verifier_data",
     entityMode: true,
   },
 };
@@ -33,13 +33,15 @@ export default function transform({ events }: Block) {
     const id = BigInt(event.data[0]).toString();
     const field = event.data[1];
     const data = event.data[2];
+    const verifier = event.data[3];
     return {
-      entity: { id, field },
+      entity: { id, field, verifier },
       update: {
         $set: {
           id,
           field,
           data,
+          verifier,
         },
       },
     };
