@@ -24,13 +24,11 @@ export const config = {
   sinkOptions: {
     database: "starknetid",
     collectionName: "id_owners",
+    entityMode: true,
   },
-  entityMode: true,
 };
 
 export default function transform({ events }: Block) {
-  // const { timestamp } = header as BlockHeader;
-
   const output = events
     .map(({ event }: EventWithTransaction) => {
       const key = BigInt(event.keys[0]);
@@ -42,17 +40,19 @@ export default function transform({ events }: Block) {
         case SELECTOR_KEYS.TRANSFER: {
           return {
             entity: { id },
-            update: {
-              $set: {
-                id: id,
-                owner: to,
-                main: { $cond: [{ $not: ["$main"] }, false, "$main"] },
+            update: [
+              {
+                $set: {
+                  id: id,
+                  owner: to,
+                  main: { $cond: [{ $not: ["$main"] }, false, "$main"] },
+                },
               },
-            },
+            ],
           };
         }
 
-        // todo: udate main to true
+        // todo: udate main to true via new identity event
 
         default:
           return;
@@ -60,6 +60,5 @@ export default function transform({ events }: Block) {
     })
     .filter(Boolean);
 
-  console.log(output);
   return output;
 }
