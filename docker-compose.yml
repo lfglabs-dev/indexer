@@ -75,12 +75,12 @@ services:
     command:
       - run
       - --allow-env=/data/env
-      - /data/src/id_verifier_data.ts
+      - /data/src/old-domains.ts
     volumes:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: id-old-domains
+      SINK_ID: old-domains
       AUTH_TOKEN: dna_xxx
 
   indexer_referral_revenues:
