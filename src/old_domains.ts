@@ -28,6 +28,10 @@ const filter = {
     },
     {
       fromAddress: formatFelt(NAMING_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_REV_ADDR_UPDATE)],
+    },
+    {
+      fromAddress: formatFelt(NAMING_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.OLD_SUBDOMAINS_RESET)],
     },
   ],
@@ -129,6 +133,25 @@ export default function transform({ events }: Block) {
               $set: {
                 domain,
                 legacy_address: address,
+              },
+            },
+          ],
+        };
+      }
+
+      case SELECTOR_KEYS.OLD_DOMAIN_REV_ADDR_UPDATE: {
+        const domainLength = Number(event.data[0]);
+        const domain = decodeDomain(
+          event.data.slice(1, 1 + domainLength).map(BigInt)
+        );
+        const address = event.data[domainLength + 1];
+        return {
+          entity: { domain },
+          update: [
+            {
+              $set: {
+                domain,
+                rev_address: address,
               },
             },
           ],

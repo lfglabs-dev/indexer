@@ -18,6 +18,9 @@ export const SELECTOR_KEYS = {
   OLD_DOMAIN_ADDR_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_addr_update")
   ),
+  OLD_DOMAIN_REV_ADDR_UPDATE: BigInt(
+    hash.getSelectorFromName("addr_to_domain_update")
+  ),
   OLD_SUBDOMAINS_RESET: BigInt(
     hash.getSelectorFromName("reset_subdomains_update")
   ),
