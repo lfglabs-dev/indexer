@@ -36,7 +36,7 @@ export default function transform({ events }: Block) {
       const key = BigInt(event.keys[0]);
 
       const to = event.data[1];
-      const id = BigInt(event.data[2]);
+      const id = event.data[2];
 
       switch (key) {
         case SELECTOR_KEYS.TRANSFER: {
