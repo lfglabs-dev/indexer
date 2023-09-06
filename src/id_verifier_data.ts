@@ -3,6 +3,7 @@ import {
   formatFelt,
   SELECTOR_KEYS,
   IDENTITY_CONTRACT,
+  MONGO_CONNECTION_STRING,
 } from "./common/constants.ts";
 
 const filter = {
@@ -22,6 +23,7 @@ export const config = {
   filter,
   sinkType: "mongo",
   sinkOptions: {
+    connectionString: MONGO_CONNECTION_STRING,
     database: "starknetid",
     collectionName: "id_verifier_data",
     entityMode: true,

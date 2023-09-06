@@ -9,6 +9,7 @@ import {
   SELECTOR_KEYS,
   REFERRAL_CONTRACT,
   DECIMALS,
+  MONGO_CONNECTION_STRING,
 } from "./common/constants.ts";
 
 const filter = {
@@ -32,6 +33,7 @@ export const config = {
   filter,
   sinkType: "mongo",
   sinkOptions: {
+    connectionString: MONGO_CONNECTION_STRING,
     database: "starknetid",
     collectionName: "referral_revenues",
     entityMode: false,
