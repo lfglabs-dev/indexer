@@ -11,6 +11,16 @@ export const SELECTOR_KEYS = {
   ON_COMMISSION: BigInt(hash.getSelectorFromName("on_commission")),
   ON_CLAIM: BigInt(hash.getSelectorFromName("on_claim")),
   OLD_DOMAIN_UPDATE: BigInt(hash.getSelectorFromName("starknet_id_update")),
+  OLD_DOMAIN_RESOLVER_UPDATE: BigInt(
+    hash.getSelectorFromName("domain_to_resolver_update")
+  ),
+  OLD_DOMAIN_TRANSFER: BigInt(hash.getSelectorFromName("domain_transfer")),
+  OLD_DOMAIN_ADDR_UPDATE: BigInt(
+    hash.getSelectorFromName("domain_to_addr_update")
+  ),
+  OLD_SUBDOMAINS_RESET: BigInt(
+    hash.getSelectorFromName("reset_subdomains_update")
+  ),
 };
 
 export const MONGO_CONNECTION_STRING = Deno.env.get(

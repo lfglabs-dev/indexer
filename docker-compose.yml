@@ -18,23 +18,85 @@ services:
       ALLOW_NONE_AUTHENTICATION: "yes"
     volumes:
       - etcd_data:/bitnami/etcd
-    ports:
-      - 2379:2379
 
-  indexer:
-    image: quay.io/apibara/cli:0.1
+  indexer_id_owners:
+    image: quay.io/apibara/sink-mongo:0.3
     depends_on:
       - etcd
     restart: always
     command:
       - run
       - --allow-env=/data/env
-      - /data/src/main.ts
+      - /data/src/id_owners.ts
     volumes:
-      - ${PWD}/:/data/
+      - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: sales-indexer
+      SINK_ID: id-owners
+      AUTH_TOKEN: dna_xxx
+
+  indexer_id_user_data:
+    image: quay.io/apibara/sink-mongo:0.3
+    depends_on:
+      - etcd
+    restart: always
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/id_user_data.ts
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: id-user-data
+      AUTH_TOKEN: dna_xxx
+
+  indexer_id_verifier_data:
+    image: quay.io/apibara/sink-mongo:0.3
+    depends_on:
+      - etcd
+    restart: always
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/id_verifier_data.ts
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: id-verifier-data
+      AUTH_TOKEN: dna_xxx
+
+  indexer_old_domains:
+    image: quay.io/apibara/sink-mongo:0.3
+    depends_on:
+      - etcd
+    restart: always
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/id_verifier_data.ts
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: id-old-domains
+      AUTH_TOKEN: dna_xxx
+
+  indexer_referral_revenues:
+    image: quay.io/apibara/sink-mongo:0.3
+    depends_on:
+      - etcd
+    restart: always
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/referral_revenues.ts
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: referral-revenues
       AUTH_TOKEN: dna_xxx
 
 volumes:
