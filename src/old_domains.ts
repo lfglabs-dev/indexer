@@ -102,7 +102,7 @@ export default function transform({ events }: Block) {
         const domain = decodeDomain(
           event.data.slice(1, 1 + domainLength).map(BigInt)
         );
-        const resolver = BigInt(event.data[domainLength + 1]).toString();
+        const resolver = event.data[domainLength + 1];
         return {
           entity: { domain },
           update: [
@@ -121,7 +121,7 @@ export default function transform({ events }: Block) {
         const domain = decodeDomain(
           event.data.slice(1, 1 + domainLength).map(BigInt)
         );
-        const address = BigInt(event.data[domainLength + 1]).toString();
+        const address = event.data[domainLength + 1];
         return {
           entity: { domain },
           update: [
