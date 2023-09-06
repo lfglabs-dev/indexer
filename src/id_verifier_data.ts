@@ -32,7 +32,7 @@ export const config = {
 
 export default function transform({ events }: Block) {
   const output = events.map(({ event }: EventWithTransaction) => {
-    const id = BigInt(event.data[0]).toString();
+    const id = BigInt(event.data[0]);
     const field = event.data[1];
     const data = event.data[2];
     const verifier = event.data[3];

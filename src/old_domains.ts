@@ -60,7 +60,7 @@ export default function transform({ events }: Block) {
           return;
         }
         const domain = decodeDomain([BigInt(event.data[1])]);
-        const owner = BigInt(event.data[domainLength + 1]).toString();
+        const owner = BigInt(event.data[domainLength + 1]);
         const expiry = Number(event.data[domainLength + 2]);
         return {
           entity: { domain },
@@ -80,8 +80,8 @@ export default function transform({ events }: Block) {
         const domain = decodeDomain(
           event.data.slice(1, 1 + domainLength).map(BigInt)
         );
-        const prevOwner = BigInt(event.data[domainLength + 1]).toString();
-        const newOwner = BigInt(event.data[domainLength + 2]).toString();
+        const prevOwner = BigInt(event.data[domainLength + 1]);
+        const newOwner = BigInt(event.data[domainLength + 2]);
         // this can be used to create subdomains documents
         return {
           entity: { domain, owner: prevOwner },
