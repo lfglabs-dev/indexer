@@ -71,8 +71,8 @@ export default function transform({ events }: Block) {
           update: {
             $set: {
               domain,
-              owner,
-              expiry: new Date(1000 * expiry),
+              id: owner,
+              expiry: +expiry,
               root: true,
             },
           },
@@ -86,14 +86,17 @@ export default function transform({ events }: Block) {
         );
         const prevOwner = event.data[domainLength + 1];
         const newOwner = event.data[domainLength + 2];
+
+        console.log(domain, "new_owner:", newOwner);
+
         // this can be used to create subdomains documents
         return {
-          entity: { domain, owner: prevOwner },
+          entity: { domain, id: prevOwner },
           update: [
             {
               $set: {
                 domain,
-                owner: newOwner,
+                id: newOwner,
                 root: { $cond: [{ $not: ["$root"] }, false, "$root"] },
               },
             },
@@ -112,7 +115,6 @@ export default function transform({ events }: Block) {
           update: [
             {
               $set: {
-                domain,
                 resolver,
               },
             },
@@ -131,7 +133,6 @@ export default function transform({ events }: Block) {
           update: [
             {
               $set: {
-                domain,
                 legacy_address: address,
               },
             },
@@ -140,17 +141,16 @@ export default function transform({ events }: Block) {
       }
 
       case SELECTOR_KEYS.OLD_DOMAIN_REV_ADDR_UPDATE: {
-        const domainLength = Number(event.data[0]);
+        const address = event.data[0];
+        const domainLength = Number(event.data[1]);
         const domain = decodeDomain(
-          event.data.slice(1, 1 + domainLength).map(BigInt)
+          event.data.slice(2, 2 + domainLength).map(BigInt)
         );
-        const address = event.data[domainLength + 1];
         return {
           entity: { domain },
           update: [
             {
               $set: {
-                domain,
                 rev_address: address,
               },
             },
@@ -158,26 +158,26 @@ export default function transform({ events }: Block) {
         };
       }
 
-      case SELECTOR_KEYS.OLD_SUBDOMAINS_RESET: {
-        const domainLength = Number(event.data[0]);
-        const domain = decodeDomain(
-          event.data.slice(1, 1 + domainLength).map(BigInt)
-        );
-        const regexPattern = new RegExp(`\.${domain.replace(".", "\\.")}$`);
+      // case SELECTOR_KEYS.OLD_SUBDOMAINS_RESET: {
+      //   const domainLength = Number(event.data[0]);
+      //   const domain = decodeDomain(
+      //     event.data.slice(1, 1 + domainLength).map(BigInt)
+      //   );
+      //   const regexPattern = new RegExp(`\.${domain.replace(".", "\\.")}$`);
 
-        return {
-          entity: { domain },
-          update: [
-            {
-              $pull: {
-                domains: {
-                  domain: { $regex: regexPattern },
-                },
-              },
-            },
-          ],
-        };
-      }
+      //   return {
+      //     entity: { domain },
+      //     update: [
+      //       {
+      //         $pull: {
+      //           domains: {
+      //             domain: { $regex: regexPattern },
+      //           },
+      //         },
+      //       },
+      //     ],
+      //   };
+      // }
 
       default:
         return;
