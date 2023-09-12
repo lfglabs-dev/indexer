@@ -40,7 +40,7 @@ export const config = {
   },
 };
 
-export default function transform({ header, events }: Block) {
+export default function transform({ events }: Block) {
   const output = events.map(({ event }: EventWithTransaction) => {
     const timestamp = event.data[0];
     const amount = formatUnits(
