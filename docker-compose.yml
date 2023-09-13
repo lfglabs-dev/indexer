@@ -19,6 +19,22 @@ services:
     volumes:
       - etcd_data:/bitnami/etcd
 
+  custom_resolutions:
+    image: quay.io/apibara/sink-mongo:0.3
+    depends_on:
+      - etcd
+    restart: always
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/custom_resolutions.ts
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: custom-resolutions
+      AUTH_TOKEN: dna_xxx
+
   indexer_id_owners:
     image: quay.io/apibara/sink-mongo:0.3
     depends_on:
