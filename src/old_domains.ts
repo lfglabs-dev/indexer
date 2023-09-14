@@ -51,7 +51,12 @@ export const config = {
   },
 };
 
-export default function transform({ events }: Block) {
+export default function transform({ header, events }: Block) {
+  if (!header) {
+    console.log("missing header, unable to process", events.length, "events");
+    return;
+  }
+  const timestamp = Math.floor(new Date(header.timestamp).getTime() / 1000);
   const output = events.map(({ event }: EventWithTransaction) => {
     const key = BigInt(event.keys[0]);
 
@@ -68,14 +73,23 @@ export default function transform({ events }: Block) {
         const expiry = Number(event.data[domainLength + 2]);
         return {
           entity: { domain },
-          update: {
-            $set: {
-              domain,
-              id: owner,
-              expiry: +expiry,
-              root: true,
+          update: [
+            {
+              $set: {
+                domain,
+                id: owner,
+                expiry: +expiry,
+                root: true,
+                creation_date: {
+                  $cond: [
+                    { $not: ["$creation_date"] },
+                    timestamp,
+                    "$creation_date",
+                  ],
+                },
+              },
             },
-          },
+          ],
         };
       }
 
@@ -87,8 +101,6 @@ export default function transform({ events }: Block) {
         const prevOwner = event.data[domainLength + 1];
         const newOwner = event.data[domainLength + 2];
 
-        console.log(domain, "new_owner:", newOwner);
-
         // this can be used to create subdomains documents
         return {
           entity: { domain, id: prevOwner },
@@ -98,6 +110,13 @@ export default function transform({ events }: Block) {
                 domain,
                 id: newOwner,
                 root: { $cond: [{ $not: ["$root"] }, false, "$root"] },
+                creation_date: {
+                  $cond: [
+                    { $not: ["$creation_date"] },
+                    timestamp,
+                    "$creation_date",
+                  ],
+                },
               },
             },
           ],
@@ -146,16 +165,26 @@ export default function transform({ events }: Block) {
         const domain = decodeDomain(
           event.data.slice(2, 2 + domainLength).map(BigInt)
         );
-        return {
-          entity: { domain },
-          update: [
-            {
-              $set: {
-                rev_address: address,
+        return [
+          {
+            entity: { rev_address: address },
+            update: [
+              {
+                $unset: "rev_address",
               },
-            },
-          ],
-        };
+            ],
+          },
+          {
+            entity: { domain },
+            update: [
+              {
+                $set: {
+                  rev_address: address,
+                },
+              },
+            ],
+          },
+        ];
       }
 
       // case SELECTOR_KEYS.OLD_SUBDOMAINS_RESET: {
@@ -183,5 +212,6 @@ export default function transform({ events }: Block) {
         return;
     }
   });
-  return output;
+
+  return output.flat().filter(Boolean);
 }
