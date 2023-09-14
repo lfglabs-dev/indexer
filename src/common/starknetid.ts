@@ -58,6 +58,15 @@ function decode(felt: bigint) {
  * @returns string
  */
 export function decodeDomain(encoded: bigint[]): string {
+  return decodeDomainSlice(encoded).concat("stark");
+}
+
+/**
+ * Decode starknetid domain represented as an array of bigint [454245n] -> 'test'
+ * @param bigint[]
+ * @returns string
+ */
+export function decodeDomainSlice(encoded: bigint[]): string {
   let decoded = "";
 
   encoded.forEach((subdomain) => {
@@ -65,9 +74,5 @@ export function decodeDomain(encoded: bigint[]): string {
     if (decoded) decoded += ".";
   });
 
-  if (!decoded) {
-    return decoded;
-  }
-
-  return decoded.concat("stark");
+  return decoded;
 }

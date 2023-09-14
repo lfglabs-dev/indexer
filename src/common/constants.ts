@@ -39,3 +39,17 @@ export const NAMING_CONTRACT = BigInt(
   Deno.env.get("NAMING_CONTRACT") as string
 );
 export const DECIMALS = 18;
+
+// Load CUSTOM_RESOLVERS_LEN from the environment.
+const CUSTOM_RESOLVERS_LEN = parseInt(
+  Deno.env.get("CUSTOM_RESOLVERS_LEN") as string
+);
+
+// Dynamically retrieve each resolver and store it in an array.
+export const CUSTOM_RESOLVERS_STRINGS: bigint[] = [];
+
+for (let i = 0; i < CUSTOM_RESOLVERS_LEN; i++) {
+  const resolverEnvName = `CUSTOM_RESOLVER_${i}`;
+  const resolverStr = Deno.env.get(resolverEnvName) as string;
+  CUSTOM_RESOLVERS_STRINGS.push(BigInt(resolverStr));
+}
