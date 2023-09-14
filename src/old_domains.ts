@@ -51,7 +51,12 @@ export const config = {
   },
 };
 
-export default function transform({ events }: Block) {
+export default function transform({ header, events }: Block) {
+  if (!header) {
+    console.log("missing header, unable to process", events.length, "events");
+    return;
+  }
+  const timestamp = Math.floor(new Date(header.timestamp).getTime() / 1000);
   const output = events.map(({ event }: EventWithTransaction) => {
     const key = BigInt(event.keys[0]);
 
@@ -68,14 +73,23 @@ export default function transform({ events }: Block) {
         const expiry = Number(event.data[domainLength + 2]);
         return {
           entity: { domain },
-          update: {
-            $set: {
-              domain,
-              id: owner,
-              expiry: +expiry,
-              root: true,
+          update: [
+            {
+              $set: {
+                domain,
+                id: owner,
+                expiry: +expiry,
+                root: true,
+                creation_date: {
+                  $cond: [
+                    { $not: ["$creation_date"] },
+                    timestamp,
+                    "$creation_date",
+                  ],
+                },
+              },
             },
-          },
+          ],
         };
       }
 
@@ -96,6 +110,13 @@ export default function transform({ events }: Block) {
                 domain,
                 id: newOwner,
                 root: { $cond: [{ $not: ["$root"] }, false, "$root"] },
+                creation_date: {
+                  $cond: [
+                    { $not: ["$creation_date"] },
+                    timestamp,
+                    "$creation_date",
+                  ],
+                },
               },
             },
           ],
@@ -192,5 +213,5 @@ export default function transform({ events }: Block) {
     }
   });
 
-  return output.flat();
+  return output.flat().filter(Boolean);
 }

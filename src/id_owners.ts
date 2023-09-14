@@ -30,11 +30,15 @@ export const config = {
   },
 };
 
-export default function transform({ events }: Block) {
+export default function transform({ header, events }: Block) {
+  if (!header) {
+    console.log("missing header, unable to process", events.length, "events");
+    return;
+  }
+  const timestamp = Math.floor(new Date(header.timestamp).getTime() / 1000);
   const output = events
     .map(({ event }: EventWithTransaction) => {
       const key = BigInt(event.keys[0]);
-
       const to = event.data[1];
       const id = event.data[2];
 
@@ -48,6 +52,13 @@ export default function transform({ events }: Block) {
                   id: id,
                   owner: to,
                   main: { $cond: [{ $not: ["$main"] }, false, "$main"] },
+                  creation_date: {
+                    $cond: [
+                      { $not: ["$creation_date"] },
+                      timestamp,
+                      "$creation_date",
+                    ],
+                  },
                 },
               },
             ],
