@@ -87,8 +87,6 @@ export default function transform({ events }: Block) {
         const prevOwner = event.data[domainLength + 1];
         const newOwner = event.data[domainLength + 2];
 
-        console.log(domain, "new_owner:", newOwner);
-
         // this can be used to create subdomains documents
         return {
           entity: { domain, id: prevOwner },
@@ -146,16 +144,26 @@ export default function transform({ events }: Block) {
         const domain = decodeDomain(
           event.data.slice(2, 2 + domainLength).map(BigInt)
         );
-        return {
-          entity: { domain },
-          update: [
-            {
-              $set: {
-                rev_address: address,
+        return [
+          {
+            entity: { rev_address: address },
+            update: [
+              {
+                $unset: "rev_address",
               },
-            },
-          ],
-        };
+            ],
+          },
+          {
+            entity: { domain },
+            update: [
+              {
+                $set: {
+                  rev_address: address,
+                },
+              },
+            ],
+          },
+        ];
       }
 
       // case SELECTOR_KEYS.OLD_SUBDOMAINS_RESET: {
@@ -183,5 +191,6 @@ export default function transform({ events }: Block) {
         return;
     }
   });
-  return output;
+
+  return output.flat();
 }
