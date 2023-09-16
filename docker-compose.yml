@@ -115,6 +115,38 @@ services:
       SINK_ID: referral-revenues
       AUTH_TOKEN: dna_xxx
 
+  auto_renew_flows:
+    image: quay.io/apibara/sink-mongo:0.3
+    depends_on:
+      - etcd
+    restart: always
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/auto_renew_flows.ts
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: auto-renew-flows
+      AUTH_TOKEN: dna_xxx
+
+  renewals:
+    image: quay.io/apibara/sink-mongo:0.3
+    depends_on:
+      - etcd
+    restart: always
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/renewals.ts
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: renewals
+      AUTH_TOKEN: dna_xxx
+
 volumes:
   etcd_data:
   mongo_data:

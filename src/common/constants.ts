@@ -10,6 +10,11 @@ export const SELECTOR_KEYS = {
   VERIFIER_DATA_UPDATE: BigInt(hash.getSelectorFromName("VerifierDataUpdate")),
   ON_COMMISSION: BigInt(hash.getSelectorFromName("on_commission")),
   ON_CLAIM: BigInt(hash.getSelectorFromName("on_claim")),
+
+  ON_AUTO_RENEW_ENABLED: BigInt(hash.getSelectorFromName("EnabledRenewal")),
+  ON_AUTO_RENEW_DISABLED: BigInt(hash.getSelectorFromName("DisabledRenewal")),
+  ON_AUTO_RENEW: BigInt(hash.getSelectorFromName("DomainRenewed")),
+
   OLD_DOMAIN_UPDATE: BigInt(hash.getSelectorFromName("starknet_id_update")),
   OLD_DOMAIN_RESOLVER_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_resolver_update")
@@ -37,6 +42,9 @@ export const REFERRAL_CONTRACT = BigInt(
 );
 export const NAMING_CONTRACT = BigInt(
   Deno.env.get("NAMING_CONTRACT") as string
+);
+export const AUTO_RENEW_CONTRACT = BigInt(
+  Deno.env.get("AUTO_RENEW_CONTRACT") as string
 );
 export const DECIMALS = 18;
 
