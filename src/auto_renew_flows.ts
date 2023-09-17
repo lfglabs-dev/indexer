@@ -116,7 +116,7 @@ export default function transform({ events }: Block) {
             entity: {
               domain,
               renewer_address: renewerAddr,
-              limit_price: limitPrice,
+              limit_price: +limitPrice,
             },
             update: [
               {

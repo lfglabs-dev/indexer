@@ -15,6 +15,8 @@ export const SELECTOR_KEYS = {
   ON_AUTO_RENEW_DISABLED: BigInt(hash.getSelectorFromName("DisabledRenewal")),
   ON_AUTO_RENEW: BigInt(hash.getSelectorFromName("DomainRenewed")),
 
+  ON_APPROVE: BigInt(hash.getSelectorFromName("Approval")),
+
   OLD_DOMAIN_UPDATE: BigInt(hash.getSelectorFromName("starknet_id_update")),
   OLD_DOMAIN_RESOLVER_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_resolver_update")
@@ -46,6 +48,7 @@ export const NAMING_CONTRACT = BigInt(
 export const AUTO_RENEW_CONTRACT = BigInt(
   Deno.env.get("AUTO_RENEW_CONTRACT") as string
 );
+export const ETH_CONTRACT = BigInt(Deno.env.get("ETH_CONTRACT") as string);
 export const DECIMALS = 18;
 
 // Load CUSTOM_RESOLVERS_LEN from the environment.
