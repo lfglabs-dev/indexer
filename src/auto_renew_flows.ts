@@ -26,7 +26,7 @@ const filter = {
     },
     {
       fromAddress: formatFelt(AUTO_RENEW_CONTRACT),
-      keys: [formatFelt(SELECTOR_KEYS.ON_AUTO_RENEW_ENABLED)],
+      keys: [formatFelt(SELECTOR_KEYS.ON_AUTO_RENEW)],
     },
   ],
 };
