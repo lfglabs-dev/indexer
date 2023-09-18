@@ -1,0 +1,130 @@
+{
+  "auto_renew_approvals": [
+    {
+      "fields": {
+        "renewer": 1
+      }
+    }
+  ],
+  "auto_renew_flows": [
+    {
+      "fields": {
+        "limit_price": 1,
+        "renewer_address": 1
+      }
+    },
+    {
+      "fields": {
+        "enabled": 1
+      }
+    },
+    {
+      "fields": {
+        "meta_hash": 1
+      }
+    }
+  ],
+  "custom_resolutions": [
+    {
+      "fields": {
+        "resolver": 1,
+        "field": 1
+      }
+    }
+  ],
+  "domains": [
+    {
+      "fields": {
+        "domain": 1
+      }
+    },
+    {
+      "fields": {
+        "id": 1
+      }
+    },
+    {
+      "fields": {
+        "expiry": 1
+      }
+    },
+    {
+      "fields": {
+        "legacy_address": 1
+      }
+    },
+    {
+      "fields": {
+        "rev_address": 1
+      }
+    },
+    {
+      "fields": {
+        "creation_date": 1
+      }
+    },
+    {
+      "fields": {
+        "root": 1
+      }
+    }
+  ],
+  "id_owners": [
+    {
+      "fields": {
+        "id": 1
+      }
+    },
+    {
+      "fields": {
+        "owner": 1
+      }
+    },
+    {
+      "fields": {
+        "creation_date": 1
+      }
+    },
+    {
+      "fields": {
+        "main": 1
+      }
+    }
+  ],
+  "id_verifier_data": [
+    {
+      "fields": {
+        "id": 1
+      }
+    },
+    {
+      "fields": {
+        "verifier": 1
+      }
+    },
+    {
+      "fields": {
+        "field": 1
+      }
+    },
+    {
+      "fields": {
+        "id": 1,
+        "field": 1,
+        "verifier": 1
+      }
+    }
+  ],
+  "renewals": [
+    {
+      "fields": {
+        "domain": 1
+      }
+    },
+    {
+      "fields": {
+        "timestamp": 1
+      }
+    }
+  ]
+}
