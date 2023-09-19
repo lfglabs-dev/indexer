@@ -31,7 +31,13 @@ export const config = {
   },
 };
 
-export default function transform({ events }: Block) {
+export default function transform({ header, events }: Block) {
+  if (!header) {
+    console.log("missing header, unable to process", events.length, "events");
+    return;
+  }
+  const timestamp = Math.floor(new Date(header.timestamp).getTime() / 1000);
+
   return events.map(({ event }: EventWithTransaction) => {
     const domainLength = Number(event.data[0]);
     const domainSlice = decodeDomainSlice(
@@ -51,6 +57,9 @@ export default function transform({ events }: Block) {
           domain_slice: domainSlice,
           field: "starknet",
           value: targetAddress,
+          creation_date: {
+            $cond: [{ $not: ["$creation_date"] }, timestamp, "$creation_date"],
+          },
         },
       },
     };
