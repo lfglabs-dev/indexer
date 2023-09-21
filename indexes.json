@@ -30,6 +30,13 @@
         "resolver": 1,
         "field": 1
       }
+    },
+    {
+      "fields": {
+        "resolver": 1,
+        "field": 1,
+        "domain_slice": 1
+      }
     }
   ],
   "domains": [
