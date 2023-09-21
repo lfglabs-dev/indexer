@@ -20,7 +20,7 @@ services:
       - etcd_data:/bitnami/etcd
 
   custom_resolutions:
-    image: quay.io/apibara/sink-mongo:0.3
+    image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
     restart: always
@@ -36,7 +36,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   indexer_id_owners:
-    image: quay.io/apibara/sink-mongo:0.3
+    image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
     restart: always
@@ -52,7 +52,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   indexer_id_user_data:
-    image: quay.io/apibara/sink-mongo:0.3
+    image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
     restart: always
@@ -68,7 +68,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   indexer_id_verifier_data:
-    image: quay.io/apibara/sink-mongo:0.3
+    image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
     restart: always
@@ -84,7 +84,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   indexer_old_domains:
-    image: quay.io/apibara/sink-mongo:0.3
+    image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
     restart: always
@@ -100,7 +100,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   indexer_referral_revenues:
-    image: quay.io/apibara/sink-mongo:0.3
+    image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
     restart: always
@@ -116,7 +116,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   auto_renew_approvals:
-    image: quay.io/apibara/sink-mongo:0.3
+    image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
     restart: always
@@ -132,7 +132,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   auto_renew_flows:
-    image: quay.io/apibara/sink-mongo:0.3
+    image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
     restart: always
@@ -148,7 +148,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   renewals:
-    image: quay.io/apibara/sink-mongo:0.3
+    image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
     restart: always
