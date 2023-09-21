@@ -19,7 +19,7 @@ services:
     volumes:
       - etcd_data:/bitnami/etcd
 
-  custom_resolutions:
+  indexer_custom_resolutions:
     image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
@@ -121,7 +121,7 @@ services:
       SINK_ID: referral-revenues
       AUTH_TOKEN: dna_xxx
 
-  auto_renew_approvals:
+  indexer_auto_renew_approvals:
     image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
@@ -138,7 +138,7 @@ services:
       SINK_ID: auto-renew-approvals
       AUTH_TOKEN: dna_xxx
 
-  auto_renew_flows:
+  indexer_auto_renew_flows:
     image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
@@ -155,7 +155,7 @@ services:
       SINK_ID: auto-renew-flows
       AUTH_TOKEN: dna_xxx
 
-  renewals:
+  indexer_renewals:
     image: quay.io/apibara/sink-mongo:0.4
     depends_on:
       - etcd
