@@ -51,8 +51,15 @@ export default function transform({ events }: Block) {
     const key = BigInt(event.keys[0]);
 
     switch (key) {
-      case SELECTOR_KEYS.ON_COMMISSION:
-        return { timestamp: +timestamp, sponsor_addr: sponsorAddr, amount };
+      case SELECTOR_KEYS.ON_COMMISSION: {
+        const sponsoredAddr = event.data[4];
+        return {
+          timestamp: +timestamp,
+          sponsor_addr: sponsorAddr,
+          sponsored_addr: sponsoredAddr,
+          amount,
+        };
+      }
 
       case SELECTOR_KEYS.ON_CLAIM:
         return {

@@ -8,10 +8,10 @@ export const SELECTOR_KEYS = {
   TRANSFER: BigInt(hash.getSelectorFromName("Transfer")),
   USER_DATA_UPDATE: BigInt(hash.getSelectorFromName("UserDataUpdate")),
   VERIFIER_DATA_UPDATE: BigInt(hash.getSelectorFromName("VerifierDataUpdate")),
-  ON_COMMISSION: BigInt(hash.getSelectorFromName("on_commission")),
-  ON_CLAIM: BigInt(hash.getSelectorFromName("on_claim")),
+  ON_COMMISSION: BigInt(hash.getSelectorFromName("OnCommission")),
+  ON_CLAIM: BigInt(hash.getSelectorFromName("OnClaim")),
 
-  ON_AUTO_RENEW_ENABLED: BigInt(hash.getSelectorFromName("EnabledRenewal")),
+  ON_AUTO_RENEW_UPDATED: BigInt(hash.getSelectorFromName("UpdatedRenewal")),
   ON_AUTO_RENEW_DISABLED: BigInt(hash.getSelectorFromName("DisabledRenewal")),
   ON_AUTO_RENEW: BigInt(hash.getSelectorFromName("DomainRenewed")),
 
