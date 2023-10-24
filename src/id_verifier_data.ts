@@ -13,6 +13,10 @@ const filter = {
       fromAddress: formatFelt(IDENTITY_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.VERIFIER_DATA_UPDATE)],
     },
+    {
+      fromAddress: formatFelt(IDENTITY_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.EXTENDED_VERIFIER_DATA_UPDATE)],
+    },
   ],
 };
 
@@ -32,21 +36,48 @@ export const config = {
 
 export default function transform({ events }: Block) {
   const output = events.map(({ event }: EventWithTransaction) => {
-    const id = event.data[0];
-    const field = event.data[1];
-    const data = event.data[2];
-    const verifier = event.data[3];
-    return {
-      entity: { id, field, verifier },
-      update: {
-        $set: {
-          id,
-          field,
-          data,
-          verifier,
-        },
-      },
-    };
+    const key = BigInt(event.keys[0]);
+    switch (key) {
+      case SELECTOR_KEYS.VERIFIER_DATA_UPDATE: {
+        const id = event.data[0];
+        const field = event.data[1];
+        const data = event.data[2];
+        const verifier = event.data[3];
+        return {
+          entity: { id, field, verifier },
+          update: {
+            $set: {
+              id,
+              field,
+              data,
+              verifier,
+            },
+          },
+        };
+      }
+
+      case SELECTOR_KEYS.EXTENDED_VERIFIER_DATA_UPDATE: {
+        const id = event.data[0];
+
+        const verifier = event.data[1];
+        const field = event.data[2];
+
+        const dataLength = Number(event.data[3]);
+        const data = event.data.slice(4, 4 + dataLength);
+
+        return {
+          entity: { id, field, verifier },
+          update: {
+            $set: {
+              id,
+              field,
+              extended_data: data,
+              verifier,
+            },
+          },
+        };
+      }
+    }
   });
   return output;
 }
