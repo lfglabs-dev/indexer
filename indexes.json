@@ -52,6 +52,12 @@
     },
     {
       "fields": {
+        "_cursor.to": 1,
+        "id": 1
+      }
+    },
+    {
+      "fields": {
         "expiry": 1
       }
     },
@@ -89,6 +95,12 @@
     },
     {
       "fields": {
+        "owner": 1,
+        "_cursor.to": 1
+      }
+    },
+    {
+      "fields": {
         "creation_date": 1
       }
     },
@@ -119,6 +131,14 @@
         "id": 1,
         "field": 1,
         "verifier": 1
+      }
+    },
+    {
+      "fields": {
+        "id": 1,
+        "field": 1,
+        "verifier": 1,
+        "_cursor.to": 1
       }
     }
   ],
