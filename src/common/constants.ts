@@ -8,7 +8,9 @@ export const SELECTOR_KEYS = {
   TRANSFER: BigInt(hash.getSelectorFromName("Transfer")),
   USER_DATA_UPDATE: BigInt(hash.getSelectorFromName("UserDataUpdate")),
   VERIFIER_DATA_UPDATE: BigInt(hash.getSelectorFromName("VerifierDataUpdate")),
-  EXTENDED_VERIFIER_DATA_UPDATE: BigInt(hash.getSelectorFromName("ExtendedVerifierDataUpdate")),
+  EXTENDED_VERIFIER_DATA_UPDATE: BigInt(
+    hash.getSelectorFromName("ExtendedVerifierDataUpdate")
+  ),
   ON_COMMISSION: BigInt(hash.getSelectorFromName("OnCommission")),
   ON_CLAIM: BigInt(hash.getSelectorFromName("OnClaim")),
 
@@ -34,6 +36,7 @@ export const SELECTOR_KEYS = {
   ),
 };
 
+export const FINALITY = Deno.env.get("FINALITY") as string;
 export const MONGO_CONNECTION_STRING = Deno.env.get(
   "MONGO_CONNECTION_STRING"
 ) as string;

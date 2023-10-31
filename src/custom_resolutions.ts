@@ -4,6 +4,7 @@ import {
   SELECTOR_KEYS,
   MONGO_CONNECTION_STRING,
   CUSTOM_RESOLVERS_STRINGS,
+  FINALITY,
 } from "./common/constants.ts";
 import { decodeDomainSlice } from "./common/starknetid.ts";
 
@@ -23,6 +24,7 @@ export const config = {
   network: "starknet",
   filter,
   sinkType: "mongo",
+  finality: FINALITY,
   sinkOptions: {
     connectionString: MONGO_CONNECTION_STRING,
     database: "starknetid",
