@@ -9,7 +9,7 @@ import {
   MONGO_CONNECTION_STRING,
   ETH_CONTRACT,
   AUTO_RENEW_CONTRACT,
-  FINALITY,
+  AR_FINALITY,
 } from "./common/constants.ts";
 
 const filter = {
@@ -27,7 +27,7 @@ export const config = {
   startingBlock: Number(Deno.env.get("STARTING_BLOCK")),
   network: "starknet",
   filter,
-  finality: FINALITY,
+  finality: AR_FINALITY,
   sinkType: "mongo",
   sinkOptions: {
     connectionString: MONGO_CONNECTION_STRING,
