@@ -4,7 +4,7 @@ import {
   SELECTOR_KEYS,
   MONGO_CONNECTION_STRING,
   AUTO_RENEW_CONTRACT,
-  FINALITY,
+  AR_FINALITY,
 } from "./common/constants.ts";
 import { decodeDomain } from "./common/starknetid.ts";
 
@@ -32,7 +32,7 @@ export const config = {
   network: "starknet",
   filter,
   sinkType: "mongo",
-  finality: FINALITY,
+  finality: AR_FINALITY,
   sinkOptions: {
     connectionString: MONGO_CONNECTION_STRING,
     database: "starknetid",
