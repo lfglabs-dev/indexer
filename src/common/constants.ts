@@ -11,6 +11,9 @@ export const SELECTOR_KEYS = {
   EXTENDED_VERIFIER_DATA_UPDATE: BigInt(
     hash.getSelectorFromName("ExtendedVerifierDataUpdate")
   ),
+  ON_MAIN_ID_UPDATE: BigInt(
+    hash.getSelectorFromName("MainIdUpdate")
+  ),
   ON_COMMISSION: BigInt(hash.getSelectorFromName("OnCommission")),
   ON_CLAIM: BigInt(hash.getSelectorFromName("OnClaim")),
 
