@@ -14,26 +14,38 @@ const filter = {
     {
       fromAddress: formatFelt(NAMING_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
     {
       fromAddress: formatFelt(NAMING_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_TRANSFER)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
     {
       fromAddress: formatFelt(NAMING_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_RESOLVER_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
     {
       fromAddress: formatFelt(NAMING_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
     {
       fromAddress: formatFelt(NAMING_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_REV_ADDR_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
     {
       fromAddress: formatFelt(NAMING_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.OLD_SUBDOMAINS_RESET)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
   ],
 };
