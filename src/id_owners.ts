@@ -4,6 +4,7 @@ import {
   SELECTOR_KEYS,
   IDENTITY_CONTRACT,
   MONGO_CONNECTION_STRING,
+  ID_UPGRADE_A_BLOCK,
   FINALITY,
 } from "./common/constants.ts";
 
@@ -52,8 +53,11 @@ export default function transform({ header, events }: Block) {
 
       switch (key) {
         case SELECTOR_KEYS.TRANSFER: {
-          const to = event.data[1];
-          const id = event.data[2];
+          const { to, id } =
+            Number(header.blockNumber) > ID_UPGRADE_A_BLOCK
+              ? { to: event.keys[2], id: event.keys[3] }
+              : { to: event.data[1], id: event.data[2] };
+
           return {
             entity: { id },
             update: [

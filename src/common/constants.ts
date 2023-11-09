@@ -11,9 +11,7 @@ export const SELECTOR_KEYS = {
   EXTENDED_VERIFIER_DATA_UPDATE: BigInt(
     hash.getSelectorFromName("ExtendedVerifierDataUpdate")
   ),
-  ON_MAIN_ID_UPDATE: BigInt(
-    hash.getSelectorFromName("MainIdUpdate")
-  ),
+  ON_MAIN_ID_UPDATE: BigInt(hash.getSelectorFromName("MainIdUpdate")),
   ON_COMMISSION: BigInt(hash.getSelectorFromName("OnCommission")),
   ON_CLAIM: BigInt(hash.getSelectorFromName("OnClaim")),
 
@@ -41,6 +39,7 @@ export const SELECTOR_KEYS = {
 
 export const FINALITY = Deno.env.get("FINALITY") as string;
 export const AR_FINALITY = Deno.env.get("AR_FINALITY") as string;
+export const ID_UPGRADE_A_BLOCK = Number(Deno.env.get("ID_UPGRADE_A_BLOCK"));
 export const MONGO_CONNECTION_STRING = Deno.env.get(
   "MONGO_CONNECTION_STRING"
 ) as string;
