@@ -13,7 +13,8 @@ const filter = {
   events: CUSTOM_RESOLVERS_STRINGS.map((custom_resolver) => {
     return {
       fromAddress: formatFelt(custom_resolver),
-      keys: [
+      includeTransaction: false,
+      includeReceipt: false,
         formatFelt(SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE),
         formatFelt(SELECTOR_KEYS.CUSTOM_RESOLVER_UPDATE),
       ],

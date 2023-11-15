@@ -13,10 +13,14 @@ const filter = {
     {
       fromAddress: formatFelt(IDENTITY_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.VERIFIER_DATA_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
     {
       fromAddress: formatFelt(IDENTITY_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.EXTENDED_VERIFIER_DATA_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
   ],
 };
