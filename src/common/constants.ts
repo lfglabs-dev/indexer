@@ -29,6 +29,9 @@ export const SELECTOR_KEYS = {
   OLD_DOMAIN_ADDR_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_addr_update")
   ),
+  CUSTOM_RESOLVER_UPDATE: BigInt(
+    hash.getSelectorFromName("CustomResolverUpdate")
+  ),
   OLD_DOMAIN_REV_ADDR_UPDATE: BigInt(
     hash.getSelectorFromName("addr_to_domain_update")
   ),
