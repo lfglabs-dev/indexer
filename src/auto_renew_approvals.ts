@@ -1,8 +1,4 @@
-import {
-  Block,
-  EventWithTransaction,
-  uint256,
-} from "./common/deps.ts";
+import { Block, EventWithTransaction, uint256 } from "./common/deps.ts";
 import {
   formatFelt,
   SELECTOR_KEYS,
@@ -18,6 +14,8 @@ const filter = {
     {
       fromAddress: formatFelt(ETH_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.ON_APPROVE)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
   ],
 };

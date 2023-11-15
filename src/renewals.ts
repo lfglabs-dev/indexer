@@ -14,6 +14,8 @@ const filter = {
     {
       fromAddress: formatFelt(NAMING_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
   ],
 };

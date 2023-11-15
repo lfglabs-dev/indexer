@@ -19,10 +19,14 @@ const filter = {
     {
       fromAddress: formatFelt(REFERRAL_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.ON_COMMISSION)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
     {
       fromAddress: formatFelt(REFERRAL_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.ON_CLAIM)],
+      includeTransaction: false,
+      includeReceipt: false,
     },
   ],
 };
