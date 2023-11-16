@@ -64,7 +64,6 @@ export default function transform({ events }: Block) {
             entity: {
               domain,
               renewer_address: renewerAddr,
-              allowance,
             },
             update: [
               {
