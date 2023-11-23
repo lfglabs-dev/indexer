@@ -4,6 +4,12 @@
       "fields": {
         "renewer": 1
       }
+    },
+    {
+      "fields": {
+        "renewer": 1,
+        "_cursor.to": 1
+      }
     }
   ],
   "auto_renew_flows": [
@@ -21,6 +27,12 @@
     {
       "fields": {
         "meta_hash": 1
+      }
+    },
+    {
+      "fields": {
+        "domain": 1,
+        "_cursor.to": 1
       }
     }
   ],
@@ -63,6 +75,12 @@
     },
     {
       "fields": {
+        "expiry": 1,
+        "_cursor.to": 1
+      }
+    },
+    {
+      "fields": {
         "legacy_address": 1
       }
     },
@@ -83,6 +101,11 @@
     }
   ],
   "id_owners": [
+    {
+      "fields": {
+        "_cursor.to": 1
+      }
+    },
     {
       "fields": {
         "id": 1
