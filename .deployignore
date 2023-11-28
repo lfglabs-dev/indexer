@@ -1,0 +1,10 @@
+.*
+venv/*
+target
+backups
+README.md
+indexes.json
+build_indexes.py
+config.template.toml
+docker-compose.prod.yml
+docker-compose.yml
