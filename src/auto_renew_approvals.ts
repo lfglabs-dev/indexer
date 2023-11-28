@@ -22,7 +22,7 @@ const filter = {
 
 export const config = {
   streamUrl: Deno.env.get("STREAM_URL"),
-  startingBlock: Number(Deno.env.get("STARTING_BLOCK")),
+  startingBlock: Number(Deno.env.get("AR_STARTING_BLOCK")),
   network: "starknet",
   filter,
   finality: AR_FINALITY,
