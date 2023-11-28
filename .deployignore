@@ -1,5 +1,5 @@
 .*
-venv/*
+venv
 target
 backups
 README.md
