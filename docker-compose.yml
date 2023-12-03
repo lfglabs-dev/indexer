@@ -225,7 +225,7 @@ services:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: sales
+      SINK_ID: eth_balances
       AUTH_TOKEN: dna_xxx
 
 volumes:
