@@ -21,6 +21,17 @@ export const SELECTOR_KEYS = {
 
   ON_APPROVE: BigInt(hash.getSelectorFromName("Approval")),
 
+
+  DOMAIN_MINT: BigInt(hash.getSelectorFromName("DomainMint")),
+  DOMAIN_RENEWAL: BigInt(hash.getSelectorFromName("DomainRenewal")),
+  DOMAIN_TRANSFER: BigInt(hash.getSelectorFromName("DomainTransfer")),
+  DOMAIN_TO_RESOLVER_UPDATE: BigInt(
+    hash.getSelectorFromName("DomainResolverUpdate")
+  ),
+  DOMAIN_REV_ADDR_UPDATE: BigInt(
+    hash.getSelectorFromName("AddressToDomainUpdate")
+  ),
+  SUBDOMAINS_RESET: BigInt(hash.getSelectorFromName("SubdomainsReset")),
   OLD_DOMAIN_UPDATE: BigInt(hash.getSelectorFromName("starknet_id_update")),
   OLD_DOMAIN_RESOLVER_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_resolver_update")
