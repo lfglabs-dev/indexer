@@ -209,6 +209,25 @@ services:
       SINK_ID: sales
       AUTH_TOKEN: dna_xxx
 
+  eth_balances:
+    image: quay.io/apibara/sink-mongo:0.4.7
+    depends_on:
+      - etcd
+    restart: always
+    ports:
+      - "8011:8011"
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/eth_balances.ts
+      - --status-server-address=0.0.0.0:8011
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: sales
+      AUTH_TOKEN: dna_xxx
+
 volumes:
   etcd_data:
   mongo_data:

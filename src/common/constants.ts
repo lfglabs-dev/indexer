@@ -6,6 +6,7 @@ export function formatFelt(key: bigint): string {
 
 export const SELECTOR_KEYS = {
   TRANSFER: BigInt(hash.getSelectorFromName("Transfer")),
+  APPROVAL: BigInt(hash.getSelectorFromName("Approval")),
   USER_DATA_UPDATE: BigInt(hash.getSelectorFromName("UserDataUpdate")),
   VERIFIER_DATA_UPDATE: BigInt(hash.getSelectorFromName("VerifierDataUpdate")),
   EXTENDED_VERIFIER_DATA_UPDATE: BigInt(
