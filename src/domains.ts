@@ -4,6 +4,7 @@ import {
   SELECTOR_KEYS,
   NAMING_CONTRACT,
   MONGO_CONNECTION_STRING,
+  NAMING_UPGRADE_A_BLOCK,
   FINALITY,
 } from "./common/constants.ts";
 import { decodeDomain } from "./common/starknetid.ts";
@@ -47,6 +48,43 @@ const filter = {
       includeTransaction: false,
       includeReceipt: false,
     },
+    // Cairo Zero events:
+    {
+      fromAddress: formatFelt(NAMING_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
+    },
+    {
+      fromAddress: formatFelt(NAMING_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_TRANSFER)],
+      includeTransaction: false,
+      includeReceipt: false,
+    },
+    {
+      fromAddress: formatFelt(NAMING_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_RESOLVER_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
+    },
+    {
+      fromAddress: formatFelt(NAMING_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
+    },
+    {
+      fromAddress: formatFelt(NAMING_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_REV_ADDR_UPDATE)],
+      includeTransaction: false,
+      includeReceipt: false,
+    },
+    {
+      fromAddress: formatFelt(NAMING_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.OLD_SUBDOMAINS_RESET)],
+      includeTransaction: false,
+      includeReceipt: false,
+    },
   ],
 };
 
@@ -71,6 +109,15 @@ export default function transform({ header, events }: Block) {
     return;
   }
   const timestamp = Math.floor(new Date(header.timestamp).getTime() / 1000);
+
+  if (Number(header.blockNumber) < NAMING_UPGRADE_A_BLOCK) {
+    return tranformCairoZeroDomains(timestamp, events);
+  }
+
+  return tranformDomains(timestamp, events);
+}
+
+function tranformDomains(timestamp: number, events: EventWithTransaction[]) {
   const output = events.map(({ event }: EventWithTransaction) => {
     const key = BigInt(event.keys[0]);
 
@@ -199,5 +246,167 @@ export default function transform({ header, events }: Block) {
     }
   });
 
+  return output.flat().filter(Boolean);
+}
+
+function tranformCairoZeroDomains(
+  timestamp: number,
+  events: EventWithTransaction[]
+) {
+  const output = events.map(({ event }: EventWithTransaction) => {
+    const key = BigInt(event.keys[0]);
+
+    switch (key) {
+      // only used by root domains
+      case SELECTOR_KEYS.OLD_DOMAIN_UPDATE: {
+        const domainLength = Number(event.data[0]);
+        if (domainLength !== 1) {
+          // this should not happen
+          return;
+        }
+        const domain = decodeDomain([BigInt(event.data[1])]);
+        const owner = event.data[domainLength + 1];
+        const expiry = Number(event.data[domainLength + 2]);
+        return {
+          entity: { domain },
+          update: [
+            {
+              $set: {
+                domain,
+                id: owner,
+                expiry: +expiry,
+                root: true,
+                creation_date: {
+                  $cond: [
+                    { $not: ["$creation_date"] },
+                    timestamp,
+                    "$creation_date",
+                  ],
+                },
+              },
+            },
+          ],
+        };
+      }
+
+      case SELECTOR_KEYS.OLD_DOMAIN_TRANSFER: {
+        const domainLength = Number(event.data[0]);
+        const domain = decodeDomain(
+          event.data.slice(1, 1 + domainLength).map(BigInt)
+        );
+        const prevOwner = event.data[domainLength + 1];
+        const newOwner = event.data[domainLength + 2];
+
+        // this can be used to create subdomains documents
+        return {
+          entity: { domain, id: prevOwner },
+          update: [
+            {
+              $set: {
+                domain,
+                id: newOwner,
+                root: { $cond: [{ $not: ["$root"] }, false, "$root"] },
+                creation_date: {
+                  $cond: [
+                    { $not: ["$creation_date"] },
+                    timestamp,
+                    "$creation_date",
+                  ],
+                },
+              },
+            },
+          ],
+        };
+      }
+
+      case SELECTOR_KEYS.OLD_DOMAIN_RESOLVER_UPDATE: {
+        const domainLength = Number(event.data[0]);
+        const domain = decodeDomain(
+          event.data.slice(1, 1 + domainLength).map(BigInt)
+        );
+        const resolver = event.data[domainLength + 1];
+        return {
+          entity: { domain },
+          update: [
+            {
+              $set: {
+                resolver,
+              },
+            },
+          ],
+        };
+      }
+
+      case SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE: {
+        const domainLength = Number(event.data[0]);
+        const domain = decodeDomain(
+          event.data.slice(1, 1 + domainLength).map(BigInt)
+        );
+        const address = event.data[domainLength + 1];
+        return {
+          entity: { domain },
+          update: [
+            {
+              $set: {
+                legacy_address: address,
+              },
+            },
+          ],
+        };
+      }
+
+      case SELECTOR_KEYS.OLD_DOMAIN_REV_ADDR_UPDATE: {
+        const address = event.data[0];
+        const domainLength = Number(event.data[1]);
+        const domain = decodeDomain(
+          event.data.slice(2, 2 + domainLength).map(BigInt)
+        );
+        return [
+          {
+            entity: { rev_address: address },
+            update: [
+              {
+                $unset: "rev_address",
+              },
+            ],
+          },
+          {
+            entity: { domain },
+            update: [
+              {
+                $set: {
+                  rev_address: address,
+                },
+              },
+            ],
+          },
+        ];
+      }
+
+      // case SELECTOR_KEYS.OLD_SUBDOMAINS_RESET: {
+      //   const domainLength = Number(event.data[0]);
+      //   const domain = decodeDomain(
+      //     event.data.slice(1, 1 + domainLength).map(BigInt)
+      //   );
+      //   const regexPattern = new RegExp(`\.${domain.replace(".", "\\.")}$`);
+
+      //   return {
+      //     entity: { domain },
+      //     update: [
+      //       {
+      //         $pull: {
+      //           domains: {
+      //             domain: { $regex: regexPattern },
+      //           },
+      //         },
+      //       },
+      //     ],
+      //   };
+      // }
+
+      default:
+        return;
+    }
+  });
   return output.flat().filter(Boolean);
 }
