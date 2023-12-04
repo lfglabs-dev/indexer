@@ -21,7 +21,6 @@ export const SELECTOR_KEYS = {
 
   ON_APPROVE: BigInt(hash.getSelectorFromName("Approval")),
 
-
   DOMAIN_MINT: BigInt(hash.getSelectorFromName("DomainMint")),
   DOMAIN_RENEWAL: BigInt(hash.getSelectorFromName("DomainRenewal")),
   DOMAIN_TRANSFER: BigInt(hash.getSelectorFromName("DomainTransfer")),
@@ -54,6 +53,7 @@ export const SELECTOR_KEYS = {
 export const FINALITY = Deno.env.get("FINALITY") as string;
 export const AR_FINALITY = Deno.env.get("AR_FINALITY") as string;
 export const ID_UPGRADE_A_BLOCK = Number(Deno.env.get("ID_UPGRADE_A_BLOCK"));
+export const NAMING_UPGRADE_A_BLOCK = Number(Deno.env.get("NAMING_UPGRADE_A_BLOCK"));
 export const MONGO_CONNECTION_STRING = Deno.env.get(
   "MONGO_CONNECTION_STRING"
 ) as string;
