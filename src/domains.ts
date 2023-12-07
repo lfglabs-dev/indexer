@@ -212,7 +212,7 @@ function tranformDomains(timestamp: number, events: EventWithTransaction[]) {
       }
 
       case SELECTOR_KEYS.DOMAIN_REV_ADDR_UPDATE: {
-        const address = event.keys[0];
+        const address = event.keys[1];
         const domainLength = Number(event.data[0]);
         const domain = decodeDomain(
           event.data.slice(1, 1 + domainLength).map(BigInt)
