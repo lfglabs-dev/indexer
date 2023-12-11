@@ -85,6 +85,12 @@ const filter = {
       includeTransaction: false,
       includeReceipt: false,
     },
+    {
+      fromAddress: formatFelt(NAMING_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.LEGACY_DOMAIN_TO_ADDR_CLEAR)],
+      includeTransaction: false,
+      includeReceipt: false,
+    },
   ],
 };
 
@@ -237,6 +243,25 @@ function tranformDomains(timestamp: number, events: EventWithTransaction[]) {
             ],
           },
         ];
+      }
+
+      case SELECTOR_KEYS.LEGACY_DOMAIN_TO_ADDR_CLEAR: {
+        const domainLength = Number(event.keys[0]);
+        const domain = decodeDomain(
+          event.keys.slice(1, 1 + domainLength).map(BigInt)
+        );
+
+        return {
+          entity: { domain },
+          update: [
+            {
+              $set: {
+                legacy_address:
+                  "0x0000000000000000000000000000000000000000000000000000000000000000",
+              },
+            },
+          ],
+        };
       }
 
       // todo: support reset

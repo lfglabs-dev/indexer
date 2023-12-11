@@ -31,6 +31,9 @@ export const SELECTOR_KEYS = {
     hash.getSelectorFromName("AddressToDomainUpdate")
   ),
   SUBDOMAINS_RESET: BigInt(hash.getSelectorFromName("SubdomainsReset")),
+  LEGACY_DOMAIN_TO_ADDR_CLEAR: BigInt(
+    hash.getSelectorFromName("LegacyDomainToAddressClear")
+  ),
   OLD_DOMAIN_UPDATE: BigInt(hash.getSelectorFromName("starknet_id_update")),
   OLD_DOMAIN_RESOLVER_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_resolver_update")
@@ -53,7 +56,9 @@ export const SELECTOR_KEYS = {
 export const FINALITY = Deno.env.get("FINALITY") as string;
 export const AR_FINALITY = Deno.env.get("AR_FINALITY") as string;
 export const ID_UPGRADE_A_BLOCK = Number(Deno.env.get("ID_UPGRADE_A_BLOCK"));
-export const NAMING_UPGRADE_A_BLOCK = Number(Deno.env.get("NAMING_UPGRADE_A_BLOCK"));
+export const NAMING_UPGRADE_A_BLOCK = Number(
+  Deno.env.get("NAMING_UPGRADE_A_BLOCK")
+);
 export const MONGO_CONNECTION_STRING = Deno.env.get(
   "MONGO_CONNECTION_STRING"
 ) as string;
