@@ -41,6 +41,9 @@ export const SELECTOR_KEYS = {
 };
 
 export const FINALITY = Deno.env.get("FINALITY") as string;
+export const STARKNET_QUEST_MONGODB_CONNECTION_STRING = Deno.env.get(
+  "STARKNET_QUEST_MONGODB_CONNECTION_STRING"
+) as string;
 export const AR_FINALITY = Deno.env.get("AR_FINALITY") as string;
 export const ID_UPGRADE_A_BLOCK = Number(Deno.env.get("ID_UPGRADE_A_BLOCK"));
 export const MONGO_CONNECTION_STRING = Deno.env.get(

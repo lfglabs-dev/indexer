@@ -5,6 +5,7 @@ import {
   BOOST_CONTRACT,
   MONGO_CONNECTION_STRING,
   ID_UPGRADE_A_BLOCK,
+  STARKNET_QUEST_MONGODB_CONNECTION_STRING,
   FINALITY,
   AR_FINALITY,
 } from "./common/constants.ts";
@@ -26,10 +27,9 @@ export const config = {
   network: "starknet",
   filter,
   sinkType: "mongo",
-  finality: AR_FINALITY,
-  sinkOptions: {},
+  finality: FINALITY,
   sinkOptions: {
-    connectionString: MONGO_CONNECTION_STRING,
+    connectionString: STARKNET_QUEST_MONGODB_CONNECTION_STRING,
     database: "goerli",
     collectionName: "boost_claims",
     entityMode: true,
@@ -45,7 +45,8 @@ export default function transform({ header, events }: Block) {
   const output = events
     .map(({ event }: EventWithTransaction) => {
       const key = BigInt(event.keys[0]);
-      const address = new BN(event.keys[1].slice(2), 16).toString(10);
+      const address = event.keys[1];
+      const formattedAddress = new BN(address.slice(2), 16).toString(10);
       if (!event.keys[2]) {
         return;
       }
@@ -54,7 +55,7 @@ export default function transform({ header, events }: Block) {
       );
       if (key === SELECTOR_KEYS.ON_CLAIM) {
         return {
-          entity: { winner: address, id: boost_id },
+          entity: { winner: formattedAddress, id: boost_id },
           update: [
             {
               $set: {},
