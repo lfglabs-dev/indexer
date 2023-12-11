@@ -8,3 +8,4 @@ export type {
   Starknet,
   EventWithTransaction,
 } from "https://esm.sh/@apibara/indexer@0.1.2/starknet";
+export { BN } from "https://esm.sh/bn.js@5.2.1";
