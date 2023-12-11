@@ -31,7 +31,7 @@ export const config = {
   sinkOptions: {
     connectionString: MONGO_CONNECTION_STRING,
     database: "goerli",
-    collectionName: "boosts",
+    collectionName: "boost_claims",
     entityMode: true,
   },
 };
@@ -57,9 +57,7 @@ export default function transform({ header, events }: Block) {
           entity: { winner: address, id: boost_id },
           update: [
             {
-              $set: {
-                claimed: true,
-              },
+              $set: {},
             },
           ],
         };
