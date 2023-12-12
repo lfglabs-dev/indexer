@@ -246,11 +246,10 @@ function tranformDomains(timestamp: number, events: EventWithTransaction[]) {
       }
 
       case SELECTOR_KEYS.LEGACY_DOMAIN_TO_ADDR_CLEAR: {
-        const domainLength = Number(event.keys[0]);
+        const domainLength = Number(event.keys[1]);
         const domain = decodeDomain(
-          event.keys.slice(1, 1 + domainLength).map(BigInt)
+          event.keys.slice(2, 2 + domainLength).map(BigInt)
         );
-
         return {
           entity: { domain },
           update: [
