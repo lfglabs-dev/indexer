@@ -215,12 +215,12 @@ services:
       - etcd
     restart: always
     ports:
-      - "8010:8010"
+      - "8011:8011"
     command:
       - run
       - --allow-env=/data/env
       - /data/src/boost_claims.ts
-      - --status-server-address=0.0.0.0:8010
+      - --status-server-address=0.0.0.0:8011
     volumes:
       - ./:/data/
     environment:
