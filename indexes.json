@@ -176,5 +176,17 @@
         "timestamp": 1
       }
     }
+  ],
+  "boost": [
+    {
+      "fields": {
+        "id": 1
+      }
+    },
+    {
+      "fields": {
+        "winner": 1
+      }
+    }
   ]
 }

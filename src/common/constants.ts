@@ -41,6 +41,9 @@ export const SELECTOR_KEYS = {
 };
 
 export const FINALITY = Deno.env.get("FINALITY") as string;
+export const STARKNET_QUEST_MONGODB_CONNECTION_STRING = Deno.env.get(
+  "STARKNET_QUEST_MONGODB_CONNECTION_STRING"
+) as string;
 export const AR_FINALITY = Deno.env.get("AR_FINALITY") as string;
 export const ID_UPGRADE_A_BLOCK = Number(Deno.env.get("ID_UPGRADE_A_BLOCK"));
 export const MONGO_CONNECTION_STRING = Deno.env.get(
@@ -49,6 +52,11 @@ export const MONGO_CONNECTION_STRING = Deno.env.get(
 export const IDENTITY_CONTRACT = BigInt(
   Deno.env.get("IDENTITY_CONTRACT") as string
 );
+export const BOOST_DATABASE = Deno.env.get("BOOST_DATABASE") as string;
+export const BOOST_STARTING_BLOCK = BigInt(
+  Deno.env.get("BOOST_STARTING_BLOCK") as string
+);
+
 export const REFERRAL_CONTRACT = BigInt(
   Deno.env.get("REFERRAL_CONTRACT") as string
 );
@@ -58,6 +66,7 @@ export const NAMING_CONTRACT = BigInt(
 export const AUTO_RENEW_CONTRACT = BigInt(
   Deno.env.get("AUTO_RENEW_CONTRACT") as string
 );
+export const BOOST_CONTRACT = BigInt(Deno.env.get("BOOST_CONTRACT") as string);
 export const ETH_CONTRACT = BigInt(Deno.env.get("ETH_CONTRACT") as string);
 export const DECIMALS = 18;
 
