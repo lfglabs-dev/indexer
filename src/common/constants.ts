@@ -52,6 +52,11 @@ export const MONGO_CONNECTION_STRING = Deno.env.get(
 export const IDENTITY_CONTRACT = BigInt(
   Deno.env.get("IDENTITY_CONTRACT") as string
 );
+export const BOOST_DATABASE = Deno.env.get("BOOST_DATABASE") as string;
+export const BOOST_STARTING_BLOCK = BigInt(
+  Deno.env.get("BOOST_STARTING_BLOCK") as string
+);
+
 export const REFERRAL_CONTRACT = BigInt(
   Deno.env.get("REFERRAL_CONTRACT") as string
 );
