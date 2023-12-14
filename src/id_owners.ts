@@ -89,20 +89,44 @@ export default function transform({ header, events }: Block) {
         case SELECTOR_KEYS.ON_MAIN_ID_UPDATE: {
           const owner = event.keys[1];
           const id = event.data[2];
-          return {
-            entity: { owner },
-            update: [
+          const enabled =
+            owner !=
+            "0x0000000000000000000000000000000000000000000000000000000000000000";
+          if (enabled) {
+            return [
               {
-                $set: {
-                  id,
-                  // if owner is  zero, it meansc it resets
-                  main:
-                    owner !=
-                    "0x0000000000000000000000000000000000000000000000000000000000000000",
-                },
+                entity: { owner, main: true },
+                update: [
+                  {
+                    $set: {
+                      main: false,
+                    },
+                  },
+                ],
               },
-            ],
-          };
+              {
+                entity: { id },
+                update: [
+                  {
+                    $set: {
+                      main: true,
+                    },
+                  },
+                ],
+              },
+            ];
+          } else {
+            return {
+              entity: { owner, main: true },
+              update: [
+                {
+                  $set: {
+                    main: false,
+                  },
+                },
+              ],
+            };
+          }
         }
 
         default:
