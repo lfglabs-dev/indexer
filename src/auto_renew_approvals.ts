@@ -6,7 +6,6 @@ import {
   ETH_CONTRACT,
   AUTO_RENEW_CONTRACT,
   AR_FINALITY,
-  ETH_UPGRADE_A_BLOCK,
 } from "./common/constants.ts";
 
 const filter = {
@@ -41,81 +40,58 @@ export default function transform({ header, events }: Block) {
     console.log("missing header, unable to process", events.length, "events");
     return;
   }
-  if (Number(header.blockNumber) < ETH_UPGRADE_A_BLOCK) {
-    return tranformCairoZeroAR(events);
-  }
-
-  return tranformAR(events);
-}
-
-function tranformAR(events: EventWithTransaction[]) {
   const output = events
     .map(({ event }: EventWithTransaction) => {
       const key = BigInt(event.keys[0]);
 
       switch (key) {
         case SELECTOR_KEYS.ON_APPROVE: {
-          const renewer = event.keys[1];
-          const spender = event.keys[2];
-          const allowance = uint256.uint256ToBN({
-            low: event.data[0],
-            high: event.data[1],
-          });
+          if (event.keys.length === 3) {
+            const renewer = event.keys[1];
+            const spender = event.keys[2];
+            const allowance = uint256.uint256ToBN({
+              low: event.data[0],
+              high: event.data[1],
+            });
 
-          if (BigInt(spender) != AUTO_RENEW_CONTRACT) {
-            return;
-          }
-          return {
-            entity: { renewer },
-            update: [
-              {
-                $set: {
-                  renewer,
-                  allowance: "0x" + allowance.toString(16),
+            if (BigInt(spender) != AUTO_RENEW_CONTRACT) {
+              return;
+            }
+
+            return {
+              entity: { renewer },
+              update: [
+                {
+                  $set: {
+                    renewer,
+                    allowance: "0x" + allowance.toString(16),
+                  },
                 },
-              },
-            ],
-          };
-        }
+              ],
+            };
+          } else {
+            const renewer = event.data[0];
+            const spender = event.data[1];
+            const allowance = uint256.uint256ToBN({
+              low: event.data[2],
+              high: event.data[3],
+            });
 
-        // should not happen
-        default:
-          return;
-      }
-    })
-    .filter(Boolean);
-
-  return output;
-}
-
-function tranformCairoZeroAR(events: EventWithTransaction[]) {
-  const output = events
-    .map(({ event }: EventWithTransaction) => {
-      const key = BigInt(event.keys[0]);
-
-      switch (key) {
-        case SELECTOR_KEYS.ON_APPROVE: {
-          const renewer = event.data[0];
-          const spender = event.data[1];
-          const allowance = uint256.uint256ToBN({
-            low: event.data[2],
-            high: event.data[3],
-          });
-
-          if (BigInt(spender) != AUTO_RENEW_CONTRACT) {
-            return;
-          }
-          return {
-            entity: { renewer },
-            update: [
-              {
-                $set: {
-                  renewer,
-                  allowance: "0x" + allowance.toString(16),
+            if (BigInt(spender) != AUTO_RENEW_CONTRACT) {
+              return;
+            }
+            return {
+              entity: { renewer },
+              update: [
+                {
+                  $set: {
+                    renewer,
+                    allowance: "0x" + allowance.toString(16),
+                  },
                 },
-              },
-            ],
-          };
+              ],
+            };
+          }
         }
 
         // should not happen
