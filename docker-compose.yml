@@ -95,7 +95,7 @@ services:
       SINK_ID: id-verifier-data
       AUTH_TOKEN: dna_xxx
 
-  indexer_old_domains:
+  indexer_domains:
     image: quay.io/apibara/sink-mongo:0.4.10
     depends_on:
       - etcd
@@ -105,13 +105,13 @@ services:
     command:
       - run
       - --allow-env=/data/env
-      - /data/src/old-domains.ts
+      - /data/src/domains.ts
       - --status-server-address=0.0.0.0:8005
     volumes:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: old-domains
+      SINK_ID: domains
       AUTH_TOKEN: dna_xxx
 
   indexer_referral_revenues:
