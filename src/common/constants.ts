@@ -24,6 +24,7 @@ export const SELECTOR_KEYS = {
   DOMAIN_MINT: BigInt(hash.getSelectorFromName("DomainMint")),
   DOMAIN_RENEWAL: BigInt(hash.getSelectorFromName("DomainRenewal")),
   DOMAIN_TRANSFER: BigInt(hash.getSelectorFromName("DomainTransfer")),
+  DOMAIN_MIGRATED: BigInt(hash.getSelectorFromName("DomainMigrated")),
   DOMAIN_TO_RESOLVER_UPDATE: BigInt(
     hash.getSelectorFromName("DomainResolverUpdate")
   ),
