@@ -138,6 +138,7 @@ function tranformDomains(timestamp: number, events: EventWithTransaction[]) {
             {
               $set: {
                 domain,
+                migrated: true,
                 id: owner,
                 expiry: +expiry,
                 root: true,
@@ -169,10 +170,27 @@ function tranformDomains(timestamp: number, events: EventWithTransaction[]) {
         };
       }
 
-      case SELECTOR_KEYS.DOMAIN_TRANSFER: {
-        const domainLength = Number(event.keys[0]);
+      case SELECTOR_KEYS.DOMAIN_MIGRATED: {
+        const domainLength = Number(event.keys[1]);
         const domain = decodeDomain(
-          event.keys.slice(1, 1 + domainLength).map(BigInt)
+          event.keys.slice(2, 2 + domainLength).map(BigInt)
+        );
+        return {
+          entity: { domain },
+          update: [
+            {
+              $set: {
+                migrated: true,
+              },
+            },
+          ],
+        };
+      }
+
+      case SELECTOR_KEYS.DOMAIN_TRANSFER: {
+        const domainLength = Number(event.keys[1]);
+        const domain = decodeDomain(
+          event.keys.slice(2, 2 + domainLength).map(BigInt)
         );
         const prevOwner = event.data[0];
         const newOwner = event.data[1];
@@ -184,6 +202,7 @@ function tranformDomains(timestamp: number, events: EventWithTransaction[]) {
             {
               $set: {
                 domain,
+                migrated: true,
                 id: newOwner,
                 root: { $cond: [{ $not: ["$root"] }, false, "$root"] },
                 creation_date: {
@@ -297,6 +316,7 @@ function tranformCairoZeroDomains(
             {
               $set: {
                 domain,
+                migrated: false,
                 id: owner,
                 expiry: +expiry,
                 root: true,
@@ -328,6 +348,7 @@ function tranformCairoZeroDomains(
             {
               $set: {
                 domain,
+                migrated: false,
                 id: newOwner,
                 root: { $cond: [{ $not: ["$root"] }, false, "$root"] },
                 creation_date: {
