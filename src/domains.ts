@@ -26,6 +26,12 @@ const filter = {
     },
     {
       fromAddress: formatFelt(NAMING_CONTRACT),
+      keys: [formatFelt(SELECTOR_KEYS.DOMAIN_MIGRATED)],
+      includeTransaction: false,
+      includeReceipt: false,
+    },
+    {
+      fromAddress: formatFelt(NAMING_CONTRACT),
       keys: [formatFelt(SELECTOR_KEYS.DOMAIN_TO_RESOLVER_UPDATE)],
       includeTransaction: false,
       includeReceipt: false,
