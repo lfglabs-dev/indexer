@@ -4,7 +4,7 @@ import {
   BOOST_CONTRACT,
   STARKNET_QUEST_MONGODB_CONNECTION_STRING,
   FINALITY,
-  BOOST_DATABASE,
+  QUEST_DATABASE,
 } from "./common/constants.ts";
 import { hash, BN } from "./common/deps.ts";
 
@@ -27,7 +27,7 @@ export const config = {
   finality: FINALITY,
   sinkOptions: {
     connectionString: STARKNET_QUEST_MONGODB_CONNECTION_STRING,
-    database: BOOST_DATABASE,
+    database: QUEST_DATABASE,
     collectionName: "boost_claims",
     entityMode: true,
   },
