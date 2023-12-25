@@ -13,7 +13,7 @@ const filter = {
   events: [
     {
       fromAddress: formatFelt(QUEST_NFT_CONTRACT),
-      keys: [hash.getSelectorFromName("OnClaim")],
+      keys: [hash.getSelectorFromName("OnMint")],
     },
   ],
 };
