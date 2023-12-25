@@ -52,7 +52,7 @@ export const MONGO_CONNECTION_STRING = Deno.env.get(
 export const IDENTITY_CONTRACT = BigInt(
   Deno.env.get("IDENTITY_CONTRACT") as string
 );
-export const BOOST_DATABASE = Deno.env.get("BOOST_DATABASE") as string;
+export const QUEST_DATABASE = Deno.env.get("QUEST_DATABASE") as string;
 export const BOOST_STARTING_BLOCK = BigInt(
   Deno.env.get("BOOST_STARTING_BLOCK") as string
 );
@@ -67,6 +67,7 @@ export const AUTO_RENEW_CONTRACT = BigInt(
   Deno.env.get("AUTO_RENEW_CONTRACT") as string
 );
 export const BOOST_CONTRACT = BigInt(Deno.env.get("BOOST_CONTRACT") as string);
+export const QUEST_NFT_CONTRACT = BigInt(Deno.env.get("QUEST_NFT_CONTRACT") as string);
 export const ETH_CONTRACT = BigInt(Deno.env.get("ETH_CONTRACT") as string);
 export const DECIMALS = 18;
 
