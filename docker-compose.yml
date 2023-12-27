@@ -228,6 +228,26 @@ services:
       SINK_ID: boost_claims
       AUTH_TOKEN: dna_xxx
 
+
+  claimed_achievements:
+    image: quay.io/apibara/sink-mongo:0.4.7
+    depends_on:
+      - etcd
+    restart: always
+    ports:
+      - "8012:8012"
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/claimed_achievements.ts
+      - --status-server-address=0.0.0.0:8012
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: boost_claims
+      AUTH_TOKEN: dna_xxx
+
 volumes:
   etcd_data:
   mongo_data:
