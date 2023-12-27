@@ -28,7 +28,7 @@ export const config = {
   sinkOptions: {
     connectionString: STARKNET_QUEST_MONGODB_CONNECTION_STRING,
     database: QUEST_DATABASE,
-    collectionName: "boost_claims",
+    collectionName: "claimed_achievements",
     entityMode: true,
   },
 };
@@ -45,14 +45,9 @@ export default function transform({ header, events }: Block) {
         return;
       }
       const task_id = parseInt(new BN(event.keys[2].slice(2), 16).toString(10));
-
       return {
         entity: { id: task_id, address: address },
-        update: [
-          {
-            $set: {},
-          },
-        ],
+        update: [],
       };
     })
     .filter(Boolean);

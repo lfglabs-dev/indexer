@@ -50,11 +50,7 @@ export default function transform({ header, events }: Block) {
 
       return {
         entity: { winner: address, id: boost_id },
-        update: [
-          {
-            $set: {},
-          },
-        ],
+        update: [],
       };
     })
     .filter(Boolean);
