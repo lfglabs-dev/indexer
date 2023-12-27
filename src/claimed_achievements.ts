@@ -1,7 +1,7 @@
 import { Block, EventWithTransaction } from "./common/deps.ts";
 import {
   formatFelt,
-  BOOST_CONTRACT,
+  QUEST_NFT_CONTRACT,
   STARKNET_QUEST_MONGODB_CONNECTION_STRING,
   FINALITY,
   QUEST_DATABASE,
@@ -12,15 +12,15 @@ const filter = {
   header: { weak: true },
   events: [
     {
-      fromAddress: formatFelt(BOOST_CONTRACT),
-      keys: [hash.getSelectorFromName("OnClaim")],
+      fromAddress: formatFelt(QUEST_NFT_CONTRACT),
+      keys: [hash.getSelectorFromName("OnMint")],
     },
   ],
 };
 
 export const config = {
   streamUrl: Deno.env.get("STREAM_URL"),
-  startingBlock: Number(Deno.env.get("BOOST_STARTING_BLOCK")),
+  startingBlock: Number(Deno.env.get("QUEST_NFT_STARTING_BLOCK")),
   network: "starknet",
   filter,
   sinkType: "mongo",
@@ -28,7 +28,7 @@ export const config = {
   sinkOptions: {
     connectionString: STARKNET_QUEST_MONGODB_CONNECTION_STRING,
     database: QUEST_DATABASE,
-    collectionName: "boost_claims",
+    collectionName: "claimed_achievements",
     entityMode: true,
   },
 };
@@ -44,12 +44,9 @@ export default function transform({ header, events }: Block) {
       if (!event.keys[2]) {
         return;
       }
-      const boost_id = parseInt(
-        new BN(event.keys[2].slice(2), 16).toString(10)
-      );
-
+      const task_id = parseInt(new BN(event.keys[2].slice(2), 16).toString(10));
       return {
-        entity: { winner: address, id: boost_id },
+        entity: { id: task_id, address: address },
         update: [],
       };
     })
