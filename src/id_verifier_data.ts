@@ -29,7 +29,7 @@ const filter = {
 
 export const config = {
   streamUrl: Deno.env.get("STREAM_URL"),
-  startingBlock: Number(Deno.env.get("STARTING_BLOCK")),
+  startingBlock: Number(Deno.env.get("ID_STARTING_BLOCK")),
   network: "starknet",
   filter,
   sinkType: "mongo",
@@ -80,12 +80,10 @@ function handling(event: Event) {
 
     case SELECTOR_KEYS.EXTENDED_VERIFIER_DATA_UPDATE: {
       const id = event.keys[1];
-
-      const verifier = event.data[0];
-      const field = event.data[1];
-
-      const dataLength = Number(event.data[2]);
-      const data = event.data.slice(3, 3 + dataLength);
+      const field = event.data[0];
+      const dataLength = Number(event.data[1]);
+      const data = event.data.slice(2, 2 + dataLength);
+      const verifier = event.data[2 + dataLength];
       return {
         entity: { id, field, verifier },
         update: {
