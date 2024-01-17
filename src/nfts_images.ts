@@ -47,7 +47,8 @@ export default function transform({ header, events }: Block) {
 
       switch (key) {
         case SELECTOR_KEYS.EQUIPMENT_UPDATED: {
-          const tokenId = decodeDomain([BigInt(event.keys[1])]);
+          const tokenId = event.keys[1];
+          const _owner = event.keys[2];
           const _previousImageId = Number(event.data[0]);
           const newImageId = Number(event.data[1]);
 
