@@ -67,7 +67,7 @@ function compareAssets(
 
   for (let i = 0; i < previousAssets.length; i++) {
     if (previousAssets[i] !== newAssets[i]) {
-      // 0 is default asset variant, no need to track
+      // 0 is default asset variant, no need to track its balance
       if (newAssets[i] != 0) {
         changes.push([i, newAssets[i], 1]);
       }
