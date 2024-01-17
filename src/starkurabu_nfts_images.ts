@@ -6,7 +6,6 @@ import {
   STARKURABU_NFT_CONTRACT,
   FINALITY,
 } from "./common/constants.ts";
-import { decodeDomain } from "./common/starknetid.ts";
 
 const filter = {
   header: { weak: true },
@@ -30,7 +29,7 @@ export const config = {
   sinkOptions: {
     connectionString: MONGO_CONNECTION_STRING,
     database: "starknetid",
-    collectionName: "nft_images",
+    collectionName: "starkurabu_nfts_images",
     entityMode: true,
   },
 };

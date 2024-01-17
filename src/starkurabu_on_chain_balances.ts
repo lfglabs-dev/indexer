@@ -42,7 +42,7 @@ export const config = {
   sinkOptions: {
     connectionString: MONGO_CONNECTION_STRING,
     database: "starknetid",
-    collectionName: "on_chain_balance",
+    collectionName: "starkurabu_on_chain_balances",
     entityMode: true,
   },
 };
