@@ -68,11 +68,9 @@ function compareAssets(
   for (let i = 0; i < previousAssets.length; i++) {
     if (previousAssets[i] !== newAssets[i]) {
       // 0 is default asset variant, no need to track its balance
-      if (newAssets[i] != 0) {
-        changes.push([i, newAssets[i], 1]);
-      }
+      // if an asset was replaced, you get it back in your balance
       if (previousAssets[i] != 0) {
-        changes.push([i, previousAssets[i], -1]);
+        changes.push([i, previousAssets[i], 1]);
       }
     }
   }
@@ -91,6 +89,8 @@ export default function transform({ header, events }: Block) {
       const key = BigInt(event.keys[0]);
 
       switch (key) {
+        // the assets added were already substracted, only the one replaced
+        // need to be added to user balance
         case SELECTOR_KEYS.EQUIPMENT_UPDATED: {
           const _tokenId = event.keys[1];
           const owner = event.keys[2];
@@ -115,28 +115,8 @@ export default function transform({ header, events }: Block) {
           return output;
         }
 
-        case SELECTOR_KEYS.ASSET_MINTED: {
-          const owner = event.keys[1];
-          const assetId = BigInt(event.data[0]);
-          const variantId = BigInt(event.data[1]);
-          const amount = BigInt(event.data[2]);
-
-          return {
-            entity: {
-              asset_id: Number(assetId),
-              variant_id: Number(variantId),
-              owner,
-            },
-            update: [
-              {
-                $incr: {
-                  amount: Number(amount),
-                },
-              },
-            ],
-          };
-        }
-
+        // when you burn your asset on chain, you increase your balance
+        // when you mint it, it was already decreased
         case SELECTOR_KEYS.ASSET_BURNT: {
           const owner = event.keys[1];
           const assetId = BigInt(event.data[0]);
@@ -152,7 +132,7 @@ export default function transform({ header, events }: Block) {
             update: [
               {
                 $incr: {
-                  amount: -Number(amount),
+                  amount: Number(amount),
                 },
               },
             ],
