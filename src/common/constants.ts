@@ -35,6 +35,9 @@ export const SELECTOR_KEYS = {
   LEGACY_DOMAIN_TO_ADDR_CLEAR: BigInt(
     hash.getSelectorFromName("LegacyDomainToAddressClear")
   ),
+  EQUIPMENT_UPDATED: BigInt(hash.getSelectorFromName("EquipmentUpdated")),
+  ASSET_MINTED: BigInt(hash.getSelectorFromName("AssetMinted")),
+  ASSET_BURNT: BigInt(hash.getSelectorFromName("AssetBurnt")),
   OLD_DOMAIN_UPDATE: BigInt(hash.getSelectorFromName("starknet_id_update")),
   OLD_DOMAIN_RESOLVER_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_resolver_update")
@@ -74,6 +77,12 @@ export const NAMING_CONTRACT = BigInt(
 );
 export const AUTO_RENEW_CONTRACT = BigInt(
   Deno.env.get("AUTO_RENEW_CONTRACT") as string
+);
+export const STARKURABU_NFT_CONTRACT = BigInt(
+  Deno.env.get("STARKURABU_NFT_CONTRACT") as string
+);
+export const STARKURABU_ASSETS_CONTRACT = BigInt(
+  Deno.env.get("STARKURABU_ASSETS_CONTRACT") as string
 );
 export const ETH_CONTRACT = BigInt(Deno.env.get("ETH_CONTRACT") as string);
 export const DECIMALS = 18;
