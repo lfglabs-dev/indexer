@@ -209,7 +209,7 @@ services:
       SINK_ID: sales
       AUTH_TOKEN: dna_xxx
 
-  starkurabu_nfts_images:
+  starkurabu_nfts:
     image: quay.io/apibara/sink-mongo:0.4.11
     depends_on:
       - etcd
@@ -219,7 +219,7 @@ services:
     command:
       - run
       - --allow-env=/data/env
-      - /data/src/starkurabu_nfts_images.ts
+      - /data/src/starkurabu_nfts.ts
       - --status-server-address=0.0.0.0:8011
     volumes:
       - ./:/data/
