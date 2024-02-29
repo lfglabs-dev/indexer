@@ -78,12 +78,6 @@ export const NAMING_CONTRACT = BigInt(
 export const AUTO_RENEW_CONTRACT = BigInt(
   Deno.env.get("AUTO_RENEW_CONTRACT") as string
 );
-export const STARKURABU_NFT_CONTRACT = BigInt(
-  Deno.env.get("STARKURABU_NFT_CONTRACT") as string
-);
-export const STARKURABU_ASSETS_CONTRACT = BigInt(
-  Deno.env.get("STARKURABU_ASSETS_CONTRACT") as string
-);
 export const ETH_CONTRACT = BigInt(Deno.env.get("ETH_CONTRACT") as string);
 export const DECIMALS = 18;
 
