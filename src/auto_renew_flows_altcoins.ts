@@ -31,7 +31,6 @@ const filter = {
     },
   ]),
 };
-console.log("filter", filter);
 
 export const config = {
   streamUrl: Deno.env.get("STREAM_URL"),
