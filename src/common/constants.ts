@@ -67,8 +67,13 @@ export const AUTO_RENEW_CONTRACT = BigInt(
   Deno.env.get("AUTO_RENEW_CONTRACT") as string
 );
 export const BOOST_CONTRACT = BigInt(Deno.env.get("BOOST_CONTRACT") as string);
-export const QUEST_NFT_CONTRACT = BigInt(Deno.env.get("QUEST_NFT_CONTRACT") as string);
+export const QUEST_NFT_CONTRACT = BigInt(
+  Deno.env.get("QUEST_NFT_CONTRACT") as string
+);
 export const ETH_CONTRACT = BigInt(Deno.env.get("ETH_CONTRACT") as string);
+export const STRK_CONTRACT = BigInt(Deno.env.get("STRK_CONTRACT") as string);
+export const USDC_CONTRACT = BigInt(Deno.env.get("USDC_CONTRACT") as string);
+export const USDT_CONTRACT = BigInt(Deno.env.get("USDT_CONTRACT") as string);
 export const DECIMALS = 18;
 
 // Load CUSTOM_RESOLVERS_LEN from the environment.
@@ -84,3 +89,7 @@ for (let i = 0; i < CUSTOM_RESOLVERS_LEN; i++) {
   const resolverStr = Deno.env.get(resolverEnvName) as string;
   CUSTOM_RESOLVERS_STRINGS.push(BigInt(resolverStr));
 }
+
+export const AUTO_RENEW_ALTCOINS_CONTRACTS: bigint[] = [
+  BigInt(Deno.env.get("STRK_AUTO_RENEW_CONTRACT") as string),
+];
