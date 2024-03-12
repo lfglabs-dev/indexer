@@ -28,7 +28,7 @@ const filter = {
 
 export const config = {
   streamUrl: Deno.env.get("STREAM_URL"),
-  startingBlock: Number(Deno.env.get("STARTING_BLOCK")),
+  startingBlock: Number(Deno.env.get("ID_STARTING_BLOCK")),
   network: "starknet",
   filter,
   sinkType: "mongo",
@@ -47,18 +47,18 @@ export default function transform({ header, events }: Block) {
     return;
   }
   const timestamp = Math.floor(new Date(header.timestamp).getTime() / 1000);
-  const output = events
-    .map(({ event }: EventWithTransaction) => {
-      const key = BigInt(event.keys[0]);
+  const output = events.flatMap(({ event }: EventWithTransaction) => {
+    const key = BigInt(event.keys[0]);
 
-      switch (key) {
-        case SELECTOR_KEYS.TRANSFER: {
-          const { to, id } =
-            Number(header.blockNumber) > ID_UPGRADE_A_BLOCK
-              ? { to: event.keys[2], id: event.keys[3] }
-              : { to: event.data[1], id: event.data[2] };
+    switch (key) {
+      case SELECTOR_KEYS.TRANSFER: {
+        const { to, id } =
+          Number(header.blockNumber) > ID_UPGRADE_A_BLOCK
+            ? { to: event.keys[2], id: event.keys[3] }
+            : { to: event.data[1], id: event.data[2] };
 
-          return {
+        return [
+          {
             entity: { id },
             update: [
               {
@@ -83,33 +83,59 @@ export default function transform({ header, events }: Block) {
                 },
               },
             ],
-          };
-        }
-
-        case SELECTOR_KEYS.ON_MAIN_ID_UPDATE: {
-          const owner = event.keys[1];
-          const id = event.data[2];
-          return {
-            entity: { owner },
-            update: [
-              {
-                $set: {
-                  id,
-                  // if owner is  zero, it meansc it resets
-                  main:
-                    owner !=
-                    "0x0000000000000000000000000000000000000000000000000000000000000000",
-                },
-              },
-            ],
-          };
-        }
-
-        default:
-          return;
+          },
+        ];
       }
-    })
-    .filter(Boolean);
+
+      case SELECTOR_KEYS.ON_MAIN_ID_UPDATE: {
+        const owner = event.keys[1];
+        const id = event.data[0];
+        const enabled =
+          owner !=
+          "0x0000000000000000000000000000000000000000000000000000000000000000";
+        if (enabled) {
+          return [
+            {
+              entity: { owner, main: true },
+              update: [
+                {
+                  $set: {
+                    main: false,
+                  },
+                },
+              ],
+            },
+            {
+              entity: { id },
+              update: [
+                {
+                  $set: {
+                    main: true,
+                  },
+                },
+              ],
+            },
+          ];
+        } else {
+          return [
+            {
+              entity: { owner, main: true },
+              update: [
+                {
+                  $set: {
+                    main: false,
+                  },
+                },
+              ],
+            },
+          ];
+        }
+      }
+
+      default:
+        return [];
+    }
+  });
 
   return output;
 }
