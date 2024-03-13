@@ -36,9 +36,9 @@ export const config = {
 
 export default function transform({ events }: Block) {
   const output = events.map(({ event }: EventWithTransaction) => {
-    const id = event.data[0];
-    const field = event.data[1];
-    const data = event.data[2];
+    const id = event.keys[1];
+    const field = event.data[0];
+    const data = event.data[1];
     return {
       entity: { id, field },
       update: {

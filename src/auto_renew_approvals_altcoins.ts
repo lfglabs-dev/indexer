@@ -3,7 +3,7 @@ import {
   formatFelt,
   SELECTOR_KEYS,
   MONGO_CONNECTION_STRING,
-  AUTO_RENEW_CONTRACT,
+  AUTO_RENEW_ALTCOINS_STRINGS,
   AR_FINALITY,
   STRK_CONTRACT,
   USDC_CONTRACT,
@@ -68,7 +68,7 @@ export default function transform({ header, events }: Block) {
           });
           const contract = event.fromAddress;
 
-          if (BigInt(spender) != AUTO_RENEW_CONTRACT) {
+          if (!AUTO_RENEW_ALTCOINS_STRINGS.includes(BigInt(spender))) {
             return;
           }
 

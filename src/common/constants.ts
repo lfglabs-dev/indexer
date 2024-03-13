@@ -21,6 +21,23 @@ export const SELECTOR_KEYS = {
 
   ON_APPROVE: BigInt(hash.getSelectorFromName("Approval")),
 
+  DOMAIN_MINT: BigInt(hash.getSelectorFromName("DomainMint")),
+  DOMAIN_RENEWAL: BigInt(hash.getSelectorFromName("DomainRenewal")),
+  DOMAIN_TRANSFER: BigInt(hash.getSelectorFromName("DomainTransfer")),
+  DOMAIN_MIGRATED: BigInt(hash.getSelectorFromName("DomainMigrated")),
+  DOMAIN_TO_RESOLVER_UPDATE: BigInt(
+    hash.getSelectorFromName("DomainResolverUpdate")
+  ),
+  DOMAIN_REV_ADDR_UPDATE: BigInt(
+    hash.getSelectorFromName("AddressToDomainUpdate")
+  ),
+  SUBDOMAINS_RESET: BigInt(hash.getSelectorFromName("SubdomainsReset")),
+  LEGACY_DOMAIN_TO_ADDR_CLEAR: BigInt(
+    hash.getSelectorFromName("LegacyDomainToAddressClear")
+  ),
+  EQUIPMENT_UPDATED: BigInt(hash.getSelectorFromName("EquipmentUpdated")),
+  ASSET_MINTED: BigInt(hash.getSelectorFromName("AssetMinted")),
+  ASSET_BURNT: BigInt(hash.getSelectorFromName("AssetBurnt")),
   OLD_DOMAIN_UPDATE: BigInt(hash.getSelectorFromName("starknet_id_update")),
   OLD_DOMAIN_RESOLVER_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_resolver_update")
@@ -46,6 +63,9 @@ export const STARKNET_QUEST_MONGODB_CONNECTION_STRING = Deno.env.get(
 ) as string;
 export const AR_FINALITY = Deno.env.get("AR_FINALITY") as string;
 export const ID_UPGRADE_A_BLOCK = Number(Deno.env.get("ID_UPGRADE_A_BLOCK"));
+export const NAMING_UPGRADE_A_BLOCK = Number(
+  Deno.env.get("NAMING_UPGRADE_A_BLOCK")
+);
 export const MONGO_CONNECTION_STRING = Deno.env.get(
   "MONGO_CONNECTION_STRING"
 ) as string;
@@ -90,6 +110,16 @@ for (let i = 0; i < CUSTOM_RESOLVERS_LEN; i++) {
   CUSTOM_RESOLVERS_STRINGS.push(BigInt(resolverStr));
 }
 
-export const AUTO_RENEW_ALTCOINS_CONTRACTS: bigint[] = [
-  BigInt(Deno.env.get("STRK_AUTO_RENEW_CONTRACT") as string),
-];
+// Load AUTO_RENEW_ALTCOINS_CONTRACTS_LEN from the environment.
+const AUTO_RENEW_ALTCOINS_CONTRACTS_LEN = parseInt(
+  Deno.env.get("AUTO_RENEW_ALTCOINS_CONTRACTS_LEN") as string
+);
+
+// Dynamically retrieve each auto renewal altcoin contract and store it in an array.
+export const AUTO_RENEW_ALTCOINS_STRINGS: bigint[] = [];
+
+for (let i = 0; i < AUTO_RENEW_ALTCOINS_CONTRACTS_LEN; i++) {
+  const autoRenewAltcoinEnvName = `AUTO_RENEW_ALTCOIN_CONTRACT_${i}`;
+  const resolverStr = Deno.env.get(autoRenewAltcoinEnvName) as string;
+  AUTO_RENEW_ALTCOINS_STRINGS.push(BigInt(resolverStr));
+}
