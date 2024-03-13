@@ -3,14 +3,14 @@ import {
   formatFelt,
   SELECTOR_KEYS,
   MONGO_CONNECTION_STRING,
-  AUTO_RENEW_ALTCOINS_CONTRACTS,
+  AUTO_RENEW_ALTCOINS_STRINGS,
   AR_FINALITY,
 } from "./common/constants.ts";
 import { decodeDomain } from "./common/starknetid.ts";
 
 const filter = {
   header: { weak: true },
-  events: AUTO_RENEW_ALTCOINS_CONTRACTS.flatMap((contract) => [
+  events: AUTO_RENEW_ALTCOINS_STRINGS.flatMap((contract) => [
     {
       fromAddress: formatFelt(contract),
       keys: [formatFelt(SELECTOR_KEYS.ON_AUTO_RENEW_UPDATED)],
