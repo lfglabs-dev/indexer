@@ -209,6 +209,44 @@ services:
       SINK_ID: sales
       AUTH_TOKEN: dna_xxx
 
+  indexer_auto_renew_approvals_altcoins:
+    image: quay.io/apibara/sink-mongo:0.4.11
+    depends_on:
+      - etcd
+    restart: always
+    ports:
+      - "8012:8012"
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/auto_renew_approvals_altcoins.ts
+      - --status-server-address=0.0.0.0:8012
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: auto-renew-approvals-altcoins
+      AUTH_TOKEN: dna_xxx
+
+  indexer_auto_renew_flows_altcoins:
+    image: quay.io/apibara/sink-mongo:0.4.11
+    depends_on:
+      - etcd
+    restart: always
+    ports:
+      - "8013:8013"
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/auto_renew_flows_altcoins.ts
+      - --status-server-address=0.0.0.0:8013
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: auto-renew-flows-altcoins
+      AUTH_TOKEN: dna_xxx
+
   boost_claims:
     image: quay.io/apibara/sink-mongo:0.4.7
     depends_on:
