@@ -87,8 +87,13 @@ export const AUTO_RENEW_CONTRACT = BigInt(
   Deno.env.get("AUTO_RENEW_CONTRACT") as string
 );
 export const BOOST_CONTRACT = BigInt(Deno.env.get("BOOST_CONTRACT") as string);
-export const QUEST_NFT_CONTRACT = BigInt(Deno.env.get("QUEST_NFT_CONTRACT") as string);
+export const QUEST_NFT_CONTRACT = BigInt(
+  Deno.env.get("QUEST_NFT_CONTRACT") as string
+);
 export const ETH_CONTRACT = BigInt(Deno.env.get("ETH_CONTRACT") as string);
+export const STRK_CONTRACT = BigInt(Deno.env.get("STRK_CONTRACT") as string);
+export const USDC_CONTRACT = BigInt(Deno.env.get("USDC_CONTRACT") as string);
+export const USDT_CONTRACT = BigInt(Deno.env.get("USDT_CONTRACT") as string);
 export const DECIMALS = 18;
 
 // Load CUSTOM_RESOLVERS_LEN from the environment.
@@ -103,4 +108,18 @@ for (let i = 0; i < CUSTOM_RESOLVERS_LEN; i++) {
   const resolverEnvName = `CUSTOM_RESOLVER_${i}`;
   const resolverStr = Deno.env.get(resolverEnvName) as string;
   CUSTOM_RESOLVERS_STRINGS.push(BigInt(resolverStr));
+}
+
+// Load AUTO_RENEW_ALTCOINS_CONTRACTS_LEN from the environment.
+const AUTO_RENEW_ALTCOINS_CONTRACTS_LEN = parseInt(
+  Deno.env.get("AUTO_RENEW_ALTCOINS_CONTRACTS_LEN") as string
+);
+
+// Dynamically retrieve each auto renewal altcoin contract and store it in an array.
+export const AUTO_RENEW_ALTCOINS_STRINGS: bigint[] = [];
+
+for (let i = 0; i < AUTO_RENEW_ALTCOINS_CONTRACTS_LEN; i++) {
+  const autoRenewAltcoinEnvName = `AUTO_RENEW_ALTCOIN_CONTRACT_${i}`;
+  const resolverStr = Deno.env.get(autoRenewAltcoinEnvName) as string;
+  AUTO_RENEW_ALTCOINS_STRINGS.push(BigInt(resolverStr));
 }
