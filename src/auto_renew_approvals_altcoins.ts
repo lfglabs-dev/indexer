@@ -60,11 +60,11 @@ export default function transform({ header, events }: Block) {
 
       switch (key) {
         case SELECTOR_KEYS.ON_APPROVE: {
-          const renewer = event.data[0];
-          const spender = event.data[1];
+          const renewer = event.keys[1];
+          const spender = event.keys[2];
           const allowance = uint256.uint256ToBN({
-            low: event.data[2],
-            high: event.data[3],
+            low: event.data[0],
+            high: event.data[1],
           });
           const contract = event.fromAddress;
 
