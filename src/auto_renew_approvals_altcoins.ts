@@ -60,57 +60,30 @@ export default function transform({ header, events }: Block) {
 
       switch (key) {
         case SELECTOR_KEYS.ON_APPROVE: {
-          if (event.keys.length === 3) {
-            const renewer = event.keys[1];
-            const spender = event.keys[2];
-            const allowance = uint256.uint256ToBN({
-              low: event.data[0],
-              high: event.data[1],
-            });
-            const contract = event.fromAddress;
+          const renewer = event.keys[1];
+          const spender = event.keys[2];
+          const allowance = uint256.uint256ToBN({
+            low: event.data[0],
+            high: event.data[1],
+          });
+          const contract = event.fromAddress;
 
-            if (!AUTO_RENEW_ALTCOINS_STRINGS.includes(BigInt(spender))) {
-              return;
-            }
-
-            return {
-              entity: { renewer },
-              update: [
-                {
-                  $set: {
-                    renewer,
-                    allowance: "0x" + allowance.toString(16),
-                    erc20_addr: contract,
-                  },
-                },
-              ],
-            };
-          } else {
-            const renewer = event.data[0];
-            const spender = event.data[1];
-            const allowance = uint256.uint256ToBN({
-              low: event.data[2],
-              high: event.data[3],
-            });
-            const contract = event.fromAddress;
-
-            if (!AUTO_RENEW_ALTCOINS_STRINGS.includes(BigInt(spender))) {
-              return;
-            }
-
-            return {
-              entity: { renewer },
-              update: [
-                {
-                  $set: {
-                    renewer,
-                    allowance: "0x" + allowance.toString(16),
-                    erc20_addr: contract,
-                  },
-                },
-              ],
-            };
+          if (!AUTO_RENEW_ALTCOINS_STRINGS.includes(BigInt(spender))) {
+            return;
           }
+
+          return {
+            entity: { renewer },
+            update: [
+              {
+                $set: {
+                  renewer,
+                  allowance: "0x" + allowance.toString(16),
+                  erc20_addr: contract,
+                },
+              },
+            ],
+          };
         }
 
         // should not happen
