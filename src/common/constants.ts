@@ -38,6 +38,9 @@ export const SELECTOR_KEYS = {
   EQUIPMENT_UPDATED: BigInt(hash.getSelectorFromName("EquipmentUpdated")),
   ASSET_MINTED: BigInt(hash.getSelectorFromName("AssetMinted")),
   ASSET_BURNT: BigInt(hash.getSelectorFromName("AssetBurnt")),
+  CUSTOM_RESOLVER_ADDRESS_UPDATE: BigInt(
+    hash.getSelectorFromName("DomainToAddressUpdate")
+  ),
   OLD_DOMAIN_UPDATE: BigInt(hash.getSelectorFromName("starknet_id_update")),
   OLD_DOMAIN_RESOLVER_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_resolver_update")

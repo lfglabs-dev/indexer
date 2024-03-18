@@ -8,20 +8,38 @@ import {
 } from "./common/constants.ts";
 import { decodeDomainSlice } from "./common/starknetid.ts";
 
-const filter = {
+const filter: {
+  header: { weak: boolean };
+  events: {
+    keys: string[];
+    fromAddress: string;
+    includeTransaction: boolean;
+    includeReceipt: boolean;
+  }[];
+} = {
   header: { weak: true },
-  events: CUSTOM_RESOLVERS_STRINGS.map((custom_resolver) => {
-    return {
-      fromAddress: formatFelt(custom_resolver),
-      includeTransaction: false,
-      includeReceipt: false,
-      keys: [
-        formatFelt(SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE),
-        formatFelt(SELECTOR_KEYS.CUSTOM_RESOLVER_UPDATE),
-      ],
-    };
-  }),
+  events: [],
 };
+
+const keys = [
+  formatFelt(SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE),
+  formatFelt(SELECTOR_KEYS.CUSTOM_RESOLVER_ADDRESS_UPDATE),
+  formatFelt(SELECTOR_KEYS.CUSTOM_RESOLVER_UPDATE),
+];
+
+// Cartesian product of resolvers and keys
+CUSTOM_RESOLVERS_STRINGS.map((custom_resolver) => ({
+  fromAddress: formatFelt(custom_resolver),
+  includeTransaction: false,
+  includeReceipt: false,
+})).forEach((event) => {
+  keys.forEach((key) => {
+    filter.events.push({
+      ...event,
+      keys: [key],
+    });
+  });
+});
 
 export const config = {
   streamUrl: Deno.env.get("STREAM_URL"),
@@ -47,64 +65,66 @@ export default function transform({ header, events }: Block) {
 
   return events.map(({ event }: EventWithTransaction) => {
     const key = BigInt(event.keys[0]);
-    switch (key) {
-      case SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE: {
-        const domainLength = Number(event.data[0]);
-        const domainSlice = decodeDomainSlice(
-          event.data.slice(1, 1 + domainLength).map(BigInt)
-        );
-        const targetAddress = event.data[domainLength + 1];
-        const resolver = event.fromAddress;
-        // 'field' will be used in the future to handle resolvings of more data
-        // like your avatar or other blockchain addresses. Existing custom resolvers
-        // only return a starknet address (equivalent to the starknet field written
-        // on your identity on the new architecture).
-        return {
-          entity: { resolver, domain_slice: domainSlice, field: "starknet" },
-          update: {
-            $set: {
-              resolver,
-              domain_slice: domainSlice,
-              field: "starknet",
-              value: targetAddress,
-              creation_date: {
-                $cond: [
-                  { $not: ["$creation_date"] },
-                  timestamp,
-                  "$creation_date",
-                ],
-              },
+    // We support both Cairo 0 and Cairo 1 style of the same event
+    if (
+      key === SELECTOR_KEYS.CUSTOM_RESOLVER_ADDRESS_UPDATE ||
+      key === SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE
+    ) {
+      const domainLength = Number(event.data[0]);
+      const domainSlice = decodeDomainSlice(
+        event.data.slice(1, 1 + domainLength).map(BigInt)
+      );
+      const targetAddress = event.data[domainLength + 1];
+      const resolver = event.fromAddress;
+      // 'field' will be used in the future to handle resolvings of more data
+      // like your avatar or other blockchain addresses. Existing custom resolvers
+      // only return a starknet address (equivalent to the starknet field written
+      // on your identity on the new architecture).
+      return {
+        entity: { resolver, domain_slice: domainSlice, field: "starknet" },
+        update: {
+          $set: {
+            resolver,
+            domain_slice: domainSlice,
+            field: "starknet",
+            value: targetAddress,
+            creation_date: {
+              $cond: [
+                { $not: ["$creation_date"] },
+                timestamp,
+                "$creation_date",
+              ],
             },
           },
-        };
-      }
-      case SELECTOR_KEYS.CUSTOM_RESOLVER_UPDATE: {
-        const domainLength = Number(event.keys[1]);
-        const domainSlice = decodeDomainSlice(
-          event.keys.slice(2, 2 + domainLength).map(BigInt)
-        );
-        const field = event.keys[domainLength + 1];
-        const value = event.data[0];
-        const resolver = event.fromAddress;
-        return {
-          entity: { resolver, domain_slice: domainSlice, field },
-          update: {
-            $set: {
-              resolver,
-              domain_slice: domainSlice,
-              field,
-              value: value,
-              creation_date: {
-                $cond: [
-                  { $not: ["$creation_date"] },
-                  timestamp,
-                  "$creation_date",
-                ],
-              },
+        },
+      };
+    } else if (key === SELECTOR_KEYS.CUSTOM_RESOLVER_UPDATE) {
+      console.log("EVENT A:", event);
+      const domainLength = Number(event.keys[1]);
+      const domainSlice = decodeDomainSlice(
+        event.keys.slice(2, 2 + domainLength).map(BigInt)
+      );
+      const field = event.keys[domainLength + 1];
+      const value = event.data[0];
+      const resolver = event.fromAddress;
+      return {
+        entity: { resolver, domain_slice: domainSlice, field },
+        update: {
+          $set: {
+            resolver,
+            domain_slice: domainSlice,
+            field,
+            value: value,
+            creation_date: {
+              $cond: [
+                { $not: ["$creation_date"] },
+                timestamp,
+                "$creation_date",
+              ],
             },
           },
-        };
-      }
+        },
+      };
     }
   });
 }
