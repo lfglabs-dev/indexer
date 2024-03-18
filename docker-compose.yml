@@ -20,7 +20,7 @@ services:
       - etcd_data:/bitnami/etcd
 
   indexer_custom_resolutions:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -35,11 +35,11 @@ services:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: custom-resolutions
+      SINK_ID: custom_resolutions
       AUTH_TOKEN: dna_xxx
 
   indexer_id_owners:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -54,11 +54,11 @@ services:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: id-owners
+      SINK_ID: id_owners
       AUTH_TOKEN: dna_xxx
 
   indexer_id_user_data:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -73,11 +73,11 @@ services:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: id-user-data
+      SINK_ID: id_user_data
       AUTH_TOKEN: dna_xxx
 
   indexer_id_verifier_data:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -92,11 +92,11 @@ services:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: id-verifier-data
+      SINK_ID: id_verifier_data
       AUTH_TOKEN: dna_xxx
 
   indexer_domains:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -115,7 +115,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   indexer_referral_revenues:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -130,11 +130,11 @@ services:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: referral-revenues
+      SINK_ID: referral_revenues
       AUTH_TOKEN: dna_xxx
 
   indexer_auto_renew_approvals:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -149,11 +149,11 @@ services:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: auto-renew-approvals
+      SINK_ID: auto_renew_approvals
       AUTH_TOKEN: dna_xxx
 
   indexer_auto_renew_flows:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -168,11 +168,11 @@ services:
       - ./:/data/
     environment:
       PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: auto-renew-flows
+      SINK_ID: auto_renew_flows
       AUTH_TOKEN: dna_xxx
 
   indexer_renewals:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -191,7 +191,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   indexer_sales:
-    image: quay.io/apibara/sink-mongo:0.4.11
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -210,45 +210,7 @@ services:
       AUTH_TOKEN: dna_xxx
 
   indexer_auto_renew_approvals_altcoins:
-    image: quay.io/apibara/sink-mongo:0.4.11
-    depends_on:
-      - etcd
-    restart: always
-    ports:
-      - "8012:8012"
-    command:
-      - run
-      - --allow-env=/data/env
-      - /data/src/auto_renew_approvals_altcoins.ts
-      - --status-server-address=0.0.0.0:8012
-    volumes:
-      - ./:/data/
-    environment:
-      PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: auto-renew-approvals-altcoins
-      AUTH_TOKEN: dna_xxx
-
-  indexer_auto_renew_flows_altcoins:
-    image: quay.io/apibara/sink-mongo:0.4.11
-    depends_on:
-      - etcd
-    restart: always
-    ports:
-      - "8013:8013"
-    command:
-      - run
-      - --allow-env=/data/env
-      - /data/src/auto_renew_flows_altcoins.ts
-      - --status-server-address=0.0.0.0:8013
-    volumes:
-      - ./:/data/
-    environment:
-      PERSIST_TO_ETCD: http://etcd:2379
-      SINK_ID: auto-renew-flows-altcoins
-      AUTH_TOKEN: dna_xxx
-
-  boost_claims:
-    image: quay.io/apibara/sink-mongo:0.4.7
+    image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
       - etcd
     restart: always
@@ -257,8 +219,46 @@ services:
     command:
       - run
       - --allow-env=/data/env
-      - /data/src/boost_claims.ts
+      - /data/src/auto_renew_approvals_altcoins.ts
       - --status-server-address=0.0.0.0:8011
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: auto_renew_approvals_altcoins
+      AUTH_TOKEN: dna_xxx
+
+  indexer_auto_renew_flows_altcoins:
+    image: quay.io/apibara/sink-mongo:0.6.1
+    depends_on:
+      - etcd
+    restart: always
+    ports:
+      - "8012:8012"
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/auto_renew_flows_altcoins.ts
+      - --status-server-address=0.0.0.0:8012
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: auto_renew_flows_altcoins
+      AUTH_TOKEN: dna_xxx
+
+  boost_claims:
+    image: quay.io/apibara/sink-mongo:0.6.1
+    depends_on:
+      - etcd
+    restart: always
+    ports:
+      - "8013:8013"
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/boost_claims.ts
+      - --status-server-address=0.0.0.0:8013
     volumes:
       - ./:/data/
     environment:
