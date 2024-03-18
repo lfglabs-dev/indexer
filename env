@@ -1,4 +1,4 @@
-STREAM_URL='https://sepolia.starknet.a5a.ch'
+STREAM_URL='https://starknetid-sepolia.starknet.a5a.ch'
 DEFAULT_FINALITY='DATA_STATUS_PENDING'
 AR_FINALITY='DATA_STATUS_ACCEPTED'
 ID_STARTING_BLOCK=48176
