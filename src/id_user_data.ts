@@ -21,7 +21,7 @@ const filter = {
 
 export const config = {
   streamUrl: Deno.env.get("STREAM_URL"),
-  startingBlock: Number(Deno.env.get("STARTING_BLOCK")),
+  startingBlock: Number(Deno.env.get("ID_STARTING_BLOCK")),
   network: "starknet",
   filter,
   sinkType: "mongo",
