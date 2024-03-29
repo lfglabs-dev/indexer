@@ -1,65 +1,54 @@
 import {
-  Block,
-  BlockHeader,
-  EventWithTransaction,
   uint256,
   formatUnits,
+  Block,
+  EventWithTransaction,
 } from "./common/deps.ts";
 import {
   formatFelt,
-  SELECTOR_KEYS,
   NAMING_CONTRACT,
+  SELECTOR_KEYS,
+  DECIMALS,
   MONGO_CONNECTION_STRING,
   FINALITY,
-  DECIMALS,
-  ETH_CONTRACT,
+  NAMING_UPGRADE_A_BLOCK,
+  TOKEN_CONTRACTS,
 } from "./common/constants.ts";
 import { decodeDomain } from "./common/starknetid.ts";
 
-type SaleDocument = {
-  domain: string;
-  timestamp: number;
-  price: number;
-  payer: string;
-  expiry: number;
-  auto: boolean;
-  sponsor: number;
-  sponsor_comm: number;
-};
+const events = [
+  {
+    fromAddress: Deno.env.get("NAMING_CONTRACT"),
+    keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_UPDATE)],
+    includeTransaction: true,
+    includeReceipt: false,
+  },
+  {
+    fromAddress: Deno.env.get("NAMING_CONTRACT"),
+    keys: [formatFelt(SELECTOR_KEYS.DOMAIN_SALE_METADATA)],
+    includeTransaction: false,
+    includeReceipt: false,
+  },
+  {
+    fromAddress: Deno.env.get("NAMING_CONTRACT"),
+    keys: [formatFelt(SELECTOR_KEYS.DOMAIN_MINT)],
+    includeTransaction: true,
+    includeReceipt: false,
+  },
+];
 
-interface TransferDetails {
-  from_address: string;
-  amount: string;
+for (const tokenContract of TOKEN_CONTRACTS) {
+  events.push({
+    fromAddress: tokenContract,
+    keys: [formatFelt(SELECTOR_KEYS.TRANSFER)],
+    includeTransaction: false,
+    includeReceipt: false,
+  });
 }
 
 const filter = {
   header: { weak: true },
-  events: [
-    {
-      fromAddress: formatFelt(ETH_CONTRACT),
-      keys: [formatFelt(SELECTOR_KEYS.TRANSFER)],
-      includeTransaction: false,
-      includeReceipt: false,
-    },
-    {
-      fromAddress: formatFelt(NAMING_CONTRACT),
-      keys: [formatFelt(SELECTOR_KEYS.OLD_DOMAIN_UPDATE)],
-      includeTransaction: false,
-      includeReceipt: false,
-    },
-    {
-      fromAddress: formatFelt(NAMING_CONTRACT),
-      keys: [formatFelt(SELECTOR_KEYS.ON_COMMISSION)],
-      includeTransaction: false,
-      includeReceipt: false,
-    },
-    {
-      fromAddress: formatFelt(NAMING_CONTRACT),
-      keys: [formatFelt(SELECTOR_KEYS.ON_AUTO_RENEW)],
-      includeTransaction: false,
-      includeReceipt: false,
-    },
-  ],
+  events,
 };
 
 export const config = {
@@ -77,82 +66,152 @@ export const config = {
   },
 };
 
-export default function transform({ header, events }: Block) {
-  const { timestamp } = header as BlockHeader;
+type SaleDocument = {
+  tx_hash: string;
+  meta_hash: string;
+  domain: string;
+  price: number;
+  payer: string;
+  timestamp: number;
+  expiry: number;
+};
 
+interface TransferDetails {
+  token: string;
+  from_address: string;
+  amount: string;
+}
+
+export default function transform({ header, events }: Block) {
+  if (!header) {
+    console.log("missing header, unable to process", events.length, "events");
+    return;
+  }
+  const timestamp = Math.floor(new Date(header.timestamp).getTime() / 1000);
+
+  if (Number(header.blockNumber) < NAMING_UPGRADE_A_BLOCK) {
+    return tranformCairoZero(timestamp, events);
+  }
+
+  return tranform(timestamp, events);
+}
+
+function tranform(timestamp: number, events: EventWithTransaction[]) {
   let lastTransfer: TransferDetails | null = null;
-  let autoRenewed = false;
-  let sponsorComm: number | null = null;
-  let sponsorAddr: number | null = null;
+  let metadata = "0x0";
 
   // Mapping and decoding each event in the block
-  const decodedEvents = events.map(({ event }: EventWithTransaction) => {
-    const key = BigInt(event.keys[0]);
+  const decodedEvents = events.map(
+    ({ event, transaction }: EventWithTransaction) => {
+      const key = BigInt(event.keys[0]);
 
-    switch (key) {
-      case SELECTOR_KEYS.TRANSFER: {
-        const [fromAddress, toAddress, amountLow, amountHigh] = event.data;
-        if (BigInt(toAddress) !== NAMING_CONTRACT) return;
+      switch (key) {
+        case SELECTOR_KEYS.TRANSFER: {
+          const tokenAddr = event.fromAddress;
+          const [fromAddress, toAddress, amountLow, amountHigh] = event.data;
+          if (BigInt(toAddress) !== NAMING_CONTRACT) return;
 
-        lastTransfer = {
-          from_address: fromAddress,
-          amount: formatUnits(
-            uint256.uint256ToBN({ low: amountLow, high: amountHigh }),
-            DECIMALS
-          ),
-        };
-        break;
-      }
-
-      case SELECTOR_KEYS.ON_AUTO_RENEW: {
-        const allowanceLow = Number(event.data[1]);
-        if (allowanceLow != 0) {
-          autoRenewed = true;
-        }
-        break;
-      }
-
-      case SELECTOR_KEYS.ON_COMMISSION:
-        sponsorComm = Number(event.data[1]);
-        sponsorAddr = Number(event.data[3]);
-        autoRenewed = true;
-        break;
-
-      case SELECTOR_KEYS.OLD_DOMAIN_UPDATE: {
-        if (!lastTransfer) return;
-
-        const arrLen = Number(event.data[0]);
-        const expiry = Number(event.data[arrLen + 2]);
-
-        // Basic output object structure
-        const output = {
-          domain: decodeDomain(event.data.slice(1, 1 + arrLen).map(BigInt)),
-          timestamp: new Date(timestamp).getTime() / 1000,
-          price: +lastTransfer.amount,
-          payer: lastTransfer.from_address,
-          expiry,
-          auto: autoRenewed,
-          sponsor: 0,
-          sponsor_comm: 0,
-        };
-
-        // Conditionally add sponsor and sponsor_comm if they are not null
-        if (sponsorAddr !== null) {
-          output.sponsor = sponsorAddr;
-          output.sponsor_comm = +(sponsorComm as number);
+          lastTransfer = {
+            token: tokenAddr,
+            from_address: fromAddress,
+            amount: formatUnits(
+              uint256.uint256ToBN({ low: amountLow, high: amountHigh }),
+              DECIMALS
+            ),
+          };
+          break;
         }
 
-        lastTransfer = null;
-        autoRenewed = false;
-        sponsorComm = null;
-        sponsorAddr = null;
-        return output;
-      }
+        case SELECTOR_KEYS.DOMAIN_SALE_METADATA:
+          //domain = Number(event.data[0]);
+          metadata = event.data[1];
+          break;
 
-      default:
-        return;
+        case SELECTOR_KEYS.DOMAIN_MINT: {
+          if (!lastTransfer) return;
+          const expiry = Number(event.data[1]);
+
+          // Basic output object structure
+          const output: SaleDocument = {
+            tx_hash: transaction.meta.hash,
+            meta_hash: metadata.slice(4),
+            domain: decodeDomain([BigInt(event.keys[1])]),
+            price: +lastTransfer.amount,
+            payer: lastTransfer.from_address,
+            timestamp,
+            expiry,
+          };
+
+          lastTransfer = null;
+          return output;
+        }
+
+        default:
+          return;
+      }
     }
-  });
+  );
+
+  // Filtering out undefined or null values from the decoded events array
+  return decodedEvents.filter(Boolean) as SaleDocument[];
+}
+
+function tranformCairoZero(timestamp: number, events: EventWithTransaction[]) {
+  let lastTransfer: TransferDetails | null = null;
+  let metadata = "0x0";
+
+  // Mapping and decoding each event in the block
+  const decodedEvents = events.map(
+    ({ event, transaction }: EventWithTransaction) => {
+      const key = BigInt(event.keys[0]);
+
+      switch (key) {
+        case SELECTOR_KEYS.TRANSFER: {
+          const [fromAddress, toAddress, amountLow, amountHigh] = event.data;
+          if (BigInt(toAddress) !== NAMING_CONTRACT) return;
+
+          lastTransfer = {
+            token: Deno.env.get("ETH_CONTRACT") as string,
+            from_address: fromAddress,
+            amount: formatUnits(
+              uint256.uint256ToBN({ low: amountLow, high: amountHigh }),
+              DECIMALS
+            ),
+          };
+          break;
+        }
+
+        case SELECTOR_KEYS.DOMAIN_SALE_METADATA:
+          //domain = Number(event.data[0]);
+          metadata = event.data[1];
+          break;
+
+        case SELECTOR_KEYS.OLD_DOMAIN_UPDATE: {
+          if (!lastTransfer) return;
+
+          const arrLen = Number(event.data[0]);
+          const expiry = Number(event.data[arrLen + 2]);
+
+          // Basic output object structure
+          const output: SaleDocument = {
+            tx_hash: transaction.meta.hash,
+            meta_hash: metadata.slice(4),
+            domain: decodeDomain(event.data.slice(1, 1 + arrLen).map(BigInt)),
+            price: +lastTransfer.amount,
+            payer: lastTransfer.from_address,
+            timestamp: timestamp,
+            expiry,
+          };
+
+          lastTransfer = null;
+          return output;
+        }
+
+        default:
+          return;
+      }
+    }
+  );
 
   // Filtering out undefined or null values from the decoded events array
   return decodedEvents.filter(Boolean) as SaleDocument[];

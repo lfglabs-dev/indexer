@@ -31,6 +31,8 @@ export const SELECTOR_KEYS = {
   DOMAIN_REV_ADDR_UPDATE: BigInt(
     hash.getSelectorFromName("AddressToDomainUpdate")
   ),
+  DOMAIN_SALE_METADATA: BigInt(hash.getSelectorFromName("SaleMetadata")),
+
   SUBDOMAINS_RESET: BigInt(hash.getSelectorFromName("SubdomainsReset")),
   LEGACY_DOMAIN_TO_ADDR_CLEAR: BigInt(
     hash.getSelectorFromName("LegacyDomainToAddressClear")
@@ -125,4 +127,17 @@ for (let i = 0; i < AUTO_RENEW_ALTCOINS_CONTRACTS_LEN; i++) {
   const autoRenewAltcoinEnvName = `AUTO_RENEW_ALTCOIN_CONTRACT_${i}`;
   const resolverStr = Deno.env.get(autoRenewAltcoinEnvName) as string;
   AUTO_RENEW_ALTCOINS_STRINGS.push(BigInt(resolverStr));
+}
+
+const TOKEN_CONTRACTS_LEN = parseInt(
+  Deno.env.get("TOKEN_CONTRACTS_LEN") as string
+);
+
+// Dynamically retrieve each token contract
+export const TOKEN_CONTRACTS: string[] = [];
+
+for (let i = 0; i < TOKEN_CONTRACTS_LEN; i++) {
+  const tokenContractEnvName = `TOKEN_CONTRACT_${i}`;
+  const tokenContract = Deno.env.get(tokenContractEnvName) as string;
+  TOKEN_CONTRACTS.push(tokenContract);
 }
