@@ -177,7 +177,7 @@
       }
     }
   ],
-  "boost": [
+  "boost_claims": [
     {
       "fields": {
         "id": 1
