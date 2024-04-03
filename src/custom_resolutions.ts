@@ -86,7 +86,8 @@ export default function transform({ header, events }: Block) {
           $set: {
             resolver,
             domain_slice: domainSlice,
-            field: "starknet",
+            field:
+              "0x000000000000000000000000000000000000000000000000737461726b6e6574", // starknet encoded
             value: targetAddress,
             creation_date: {
               $cond: [
@@ -104,7 +105,10 @@ export default function transform({ header, events }: Block) {
       const domainSlice = decodeDomainSlice(
         event.keys.slice(2, 2 + domainLength).map(BigInt)
       );
-      const field = event.keys[domainLength + 1];
+      const field =
+        event.keys.length > domainLength + 2
+          ? event.keys[domainLength + 2]
+          : "";
       const value = event.data[0];
       const resolver = event.fromAddress;
       return {
