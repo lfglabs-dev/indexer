@@ -26,12 +26,6 @@ const events = [
   {
     fromAddress: Deno.env.get("NAMING_CONTRACT"),
     keys: [formatFelt(SELECTOR_KEYS.DOMAIN_SALE_METADATA)],
-    includeTransaction: false,
-    includeReceipt: false,
-  },
-  {
-    fromAddress: Deno.env.get("NAMING_CONTRACT"),
-    keys: [formatFelt(SELECTOR_KEYS.DOMAIN_MINT)],
     includeTransaction: true,
     includeReceipt: false,
   },
@@ -74,7 +68,6 @@ type SaleDocument = {
   price: number;
   payer: string;
   timestamp: number;
-  expiry: number;
 };
 
 interface TransferDetails {
@@ -99,7 +92,6 @@ export default function transform({ header, events }: Block) {
 
 function tranform(timestamp: number, events: EventWithTransaction[]) {
   let lastTransfer: TransferDetails | null = null;
-  let metadata = "0x0";
 
   // Mapping and decoding each event in the block
   const decodedEvents = events.map(
@@ -123,25 +115,19 @@ function tranform(timestamp: number, events: EventWithTransaction[]) {
           break;
         }
 
-        case SELECTOR_KEYS.DOMAIN_SALE_METADATA:
-          //domain = Number(event.data[0]);
-          metadata = event.data[1];
-          break;
-
-        case SELECTOR_KEYS.DOMAIN_MINT: {
+        case SELECTOR_KEYS.DOMAIN_SALE_METADATA: {
           if (!lastTransfer) return;
-          const expiry = Number(event.data[1]);
+          const metadata = event.data[1];
 
           // Basic output object structure
           const output: SaleDocument = {
             tx_hash: transaction.meta.hash,
             meta_hash: metadata.slice(4),
-            domain: decodeDomain([BigInt(event.keys[1])]),
+            domain: decodeDomain([BigInt(event.data[0])]),
             token: lastTransfer.token,
             price: +lastTransfer.amount,
             payer: lastTransfer.from_address,
             timestamp,
-            expiry,
           };
 
           lastTransfer = null;
@@ -192,7 +178,6 @@ function tranformCairoZero(timestamp: number, events: EventWithTransaction[]) {
           if (!lastTransfer) return;
 
           const arrLen = Number(event.data[0]);
-          const expiry = Number(event.data[arrLen + 2]);
 
           // Basic output object structure
           const output: SaleDocument = {
@@ -203,7 +188,6 @@ function tranformCairoZero(timestamp: number, events: EventWithTransaction[]) {
             price: +lastTransfer.amount,
             payer: lastTransfer.from_address,
             timestamp: timestamp,
-            expiry,
           };
 
           lastTransfer = null;
