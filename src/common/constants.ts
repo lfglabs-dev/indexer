@@ -43,6 +43,9 @@ export const SELECTOR_KEYS = {
   CUSTOM_RESOLVER_ADDRESS_UPDATE: BigInt(
     hash.getSelectorFromName("DomainToAddressUpdate")
   ),
+  OFFCHAIN_RESOLVER_UPDATE: BigInt(
+    hash.getSelectorFromName("StarknetIDOffChainResolverUpdate")
+  ),
   OLD_DOMAIN_UPDATE: BigInt(hash.getSelectorFromName("starknet_id_update")),
   OLD_DOMAIN_RESOLVER_UPDATE: BigInt(
     hash.getSelectorFromName("domain_to_resolver_update")
