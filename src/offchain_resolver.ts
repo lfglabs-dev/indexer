@@ -44,14 +44,14 @@ export default function transform({ header, events }: Block) {
     switch (key) {
       case SELECTOR_KEYS.OFFCHAIN_RESOLVER_UPDATE: {
         try {
-          const contractAddress = event.keys[1];
+          const resolver_contract = event.fromAddress;
           let uri = event.data
             .slice(1)
             .map((slice) => shortString.decodeShortString(slice))
             .join("");
 
           return {
-            entity: { resolver_contract: contractAddress },
+            entity: { resolver_contract },
             update: [
               {
                 $set: {
