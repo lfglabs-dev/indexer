@@ -253,12 +253,12 @@ services:
       - etcd
     restart: always
     ports:
-      - "8014:8014"
+      - "8013:8013"
     command:
       - run
       - --allow-env=/data/env
       - /data/src/offchain_resolver.ts
-      - --status-server-address=0.0.0.0:8014
+      - --status-server-address=0.0.0.0:8013
     volumes:
       - ./:/data/
     environment:
@@ -272,12 +272,12 @@ services:
       - etcd
     restart: always
     ports:
-      - "8013:8013"
+      - "8014:8014"
     command:
       - run
       - --allow-env=/data/env
       - /data/src/boost_claims.ts
-      - --status-server-address=0.0.0.0:8013
+      - --status-server-address=0.0.0.0:8014
     volumes:
       - ./:/data/
     environment:
