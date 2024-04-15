@@ -247,6 +247,25 @@ services:
       SINK_ID: auto_renew_flows_altcoins
       AUTH_TOKEN: dna_xxx
 
+  indexer_offchain_resolvers:
+    image: quay.io/apibara/sink-mongo:0.6.1
+    depends_on:
+      - etcd
+    restart: always
+    ports:
+      - "8014:8014"
+    command:
+      - run
+      - --allow-env=/data/env
+      - /data/src/offchain_resolver.ts
+      - --status-server-address=0.0.0.0:8014
+    volumes:
+      - ./:/data/
+    environment:
+      PERSIST_TO_ETCD: http://etcd:2379
+      SINK_ID: offchain_resolver
+      AUTH_TOKEN: dna_xxx
+
   boost_claims:
     image: quay.io/apibara/sink-mongo:0.6.1
     depends_on:
