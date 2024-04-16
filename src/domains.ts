@@ -242,6 +242,24 @@ function tranformDomains(timestamp: number, events: EventWithTransaction[]) {
         };
       }
 
+      case SELECTOR_KEYS.DOMAIN_TO_RESOLVER_UPDATE: {
+        const domainLength = Number(event.keys[1]);
+        const domain = decodeDomain(
+          event.keys.slice(2, 2 + domainLength).map(BigInt)
+        );
+        const resolver = event.data[0];
+        return {
+          entity: { domain },
+          update: [
+            {
+              $set: {
+                resolver,
+              },
+            },
+          ],
+        };
+      }
+
       case SELECTOR_KEYS.DOMAIN_REV_ADDR_UPDATE: {
         const address = event.keys[1];
         const domainLength = Number(event.data[0]);
