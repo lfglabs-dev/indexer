@@ -45,21 +45,43 @@ export default function transform({ header, events }: Block) {
       case SELECTOR_KEYS.OFFCHAIN_RESOLVER_UPDATE: {
         try {
           const resolver_contract = event.fromAddress;
-          let uri = event.data
-            .slice(1)
-            .map((slice) => shortString.decodeShortString(slice))
-            .join("");
+          const uriAddedLen = Number(event.data[0]);
+          const uriRemovedLen = Number(event.data[1 + uriAddedLen]);
 
-          return {
-            entity: { resolver_contract },
-            update: [
-              {
+          if (uriAddedLen > 0) {
+            const uriArray = event.data.slice(1, 1 + uriAddedLen);
+            const uri = uriArray
+              .map((slice) => shortString.decodeShortString(slice))
+              .join("");
+
+            return {
+              entity: { resolver_contract },
+              update: {
                 $set: {
-                  uri: uri,
+                  uri,
+                  active: true,
                 },
               },
-            ],
-          };
+            };
+          }
+
+          if (uriRemovedLen > 0) {
+            const uriArray = event.data.slice(
+              2 + uriAddedLen,
+              2 + uriAddedLen + uriRemovedLen
+            );
+            const uri = uriArray
+              .map((slice) => shortString.decodeShortString(slice))
+              .join("");
+            return {
+              entity: { resolver_contract, uri },
+              update: {
+                $set: {
+                  active: false,
+                },
+              },
+            };
+          }
         } catch (e) {
           console.log(
             "Error while processing OFFCHAIN_RESOLVER_UPDATE event",
