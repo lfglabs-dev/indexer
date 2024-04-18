@@ -70,11 +70,16 @@ export default function transform({ header, events }: Block) {
       key === SELECTOR_KEYS.CUSTOM_RESOLVER_ADDRESS_UPDATE ||
       key === SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE
     ) {
-      const domainLength = Number(event.data[0]);
-      const domainSlice = decodeDomainSlice(
-        event.data.slice(1, 1 + domainLength).map(BigInt)
-      );
-      const targetAddress = event.data[domainLength + 1];
+      const isNewEvent = event.keys.length > 1;
+      const domainLength = isNewEvent
+        ? Number(event.keys[1])
+        : Number(event.data[0]);
+      const domainSlice = isNewEvent
+        ? decodeDomainSlice(event.keys.slice(2, 2 + domainLength).map(BigInt))
+        : decodeDomainSlice(event.data.slice(1, 1 + domainLength).map(BigInt));
+      let targetAddress = isNewEvent
+        ? event.data[0]
+        : event.data[domainLength + 1];
       const resolver = event.fromAddress;
       // 'field' will be used in the future to handle resolvings of more data
       // like your avatar or other blockchain addresses. Existing custom resolvers
@@ -100,7 +105,6 @@ export default function transform({ header, events }: Block) {
         },
       };
     } else if (key === SELECTOR_KEYS.CUSTOM_RESOLVER_UPDATE) {
-      console.log("EVENT A:", event);
       const domainLength = Number(event.keys[1]);
       const domainSlice = decodeDomainSlice(
         event.keys.slice(2, 2 + domainLength).map(BigInt)
