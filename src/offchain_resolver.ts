@@ -55,10 +55,9 @@ export default function transform({ header, events }: Block) {
               .join("");
 
             return {
-              entity: { resolver_contract },
+              entity: { resolver_contract, uri },
               update: {
                 $set: {
-                  uri,
                   active: true,
                 },
               },
