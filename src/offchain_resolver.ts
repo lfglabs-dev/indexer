@@ -43,6 +43,7 @@ export default function transform({ header, events }: Block) {
     const key = BigInt(event.keys[0]);
     switch (key) {
       case SELECTOR_KEYS.OFFCHAIN_RESOLVER_UPDATE: {
+        console.log("event", event);
         try {
           const resolver_contract = event.fromAddress;
           const uriAddedLen = Number(event.data[0]);
@@ -55,10 +56,9 @@ export default function transform({ header, events }: Block) {
               .join("");
 
             return {
-              entity: { resolver_contract },
+              entity: { resolver_contract, uri },
               update: {
                 $set: {
-                  uri,
                   active: true,
                 },
               },
