@@ -43,7 +43,6 @@ export default function transform({ header, events }: Block) {
     const key = BigInt(event.keys[0]);
     switch (key) {
       case SELECTOR_KEYS.OFFCHAIN_RESOLVER_UPDATE: {
-        console.log("event", event);
         try {
           const resolver_contract = event.fromAddress;
           const uriAddedLen = Number(event.data[0]);
