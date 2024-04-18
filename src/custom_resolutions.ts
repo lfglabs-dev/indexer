@@ -65,44 +65,21 @@ export default function transform({ header, events }: Block) {
 
   return events.map(({ event }: EventWithTransaction) => {
     const key = BigInt(event.keys[0]);
-    // Cairo0 support
-    if (key === SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE) {
-      const domainLength = Number(event.data[0]);
-      const domainSlice = decodeDomainSlice(
-        event.data.slice(1, 1 + domainLength).map(BigInt)
-      );
-      const targetAddress = event.data[domainLength + 1];
-      const resolver = event.fromAddress;
-      // 'field' will be used in the future to handle resolvings of more data
-      // like your avatar or other blockchain addresses. Existing custom resolvers
-      // only return a starknet address (equivalent to the starknet field written
-      // on your identity on the new architecture).
-      return {
-        entity: { resolver, domain_slice: domainSlice, field: "starknet" },
-        update: {
-          $set: {
-            resolver,
-            domain_slice: domainSlice,
-            field:
-              "0x000000000000000000000000000000000000000000000000737461726b6e6574", // starknet encoded
-            value: targetAddress,
-            creation_date: {
-              $cond: [
-                { $not: ["$creation_date"] },
-                timestamp,
-                "$creation_date",
-              ],
-            },
-          },
-        },
-      };
-    } else if (key === SELECTOR_KEYS.CUSTOM_RESOLVER_ADDRESS_UPDATE) {
-      // Cairo1 support
-      const domainLength = Number(event.keys[1]);
-      const domainSlice = decodeDomainSlice(
-        event.keys.slice(2, 2 + domainLength).map(BigInt)
-      );
-      const targetAddress = event.data[0];
+    // We support both Cairo 0 and Cairo 1 style of the same event
+    if (
+      key === SELECTOR_KEYS.CUSTOM_RESOLVER_ADDRESS_UPDATE ||
+      key === SELECTOR_KEYS.OLD_DOMAIN_ADDR_UPDATE
+    ) {
+      const isNewEvent = event.keys.length > 1;
+      const domainLength = isNewEvent
+        ? Number(event.keys[1])
+        : Number(event.data[0]);
+      const domainSlice = isNewEvent
+        ? decodeDomainSlice(event.keys.slice(2, 2 + domainLength).map(BigInt))
+        : decodeDomainSlice(event.data.slice(1, 1 + domainLength).map(BigInt));
+      let targetAddress = isNewEvent
+        ? event.data[0]
+        : event.data[domainLength + 1];
       const resolver = event.fromAddress;
       // 'field' will be used in the future to handle resolvings of more data
       // like your avatar or other blockchain addresses. Existing custom resolvers
