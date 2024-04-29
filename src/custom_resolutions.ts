@@ -86,7 +86,12 @@ export default function transform({ header, events }: Block) {
       // only return a starknet address (equivalent to the starknet field written
       // on your identity on the new architecture).
       return {
-        entity: { resolver, domain_slice: domainSlice, field: "starknet" },
+        entity: {
+          resolver,
+          domain_slice: domainSlice,
+          field:
+            "0x000000000000000000000000000000000000000000000000737461726b6e6574",
+        },
         update: {
           $set: {
             resolver,
