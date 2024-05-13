@@ -148,6 +148,7 @@ function tranformDomains(timestamp: number, events: EventWithTransaction[]) {
                 id: owner,
                 expiry: +expiry,
                 root: true,
+                legacy_address: null, // in case someone owned this domain before
                 creation_date: {
                   $cond: [
                     { $not: ["$creation_date"] },
